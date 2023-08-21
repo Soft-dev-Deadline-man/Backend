@@ -58,6 +58,14 @@ $ pnpm run test:e2e
 $ pnpm run test:cov
 ```
 
+## SwaggerUI
+
+```bash
+$ pnpm run start:dev
+
+# Goto localhost:3000/api
+```
+
 ## Support
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
