@@ -1,7 +1,6 @@
 name: CI for NestJS with pnpm
 
 on:
-  push:
   pull_request:
     branches:
       - main 
