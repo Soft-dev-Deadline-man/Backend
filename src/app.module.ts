@@ -2,9 +2,11 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
+import { UserModule } from './User/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { BlogModule } from './blog/blog.module';
+import { MinioClientModule } from './minio-client/minio-client.module';
+import { ImageUploadModule } from './image-upload/image-upload.module';
 
 @Module({
   imports: [
@@ -14,7 +16,9 @@ import { BlogModule } from './blog/blog.module';
     }),
     MongooseModule.forRoot(process.env.MONGO_URI),
     UserModule,
-    BlogModule
+    BlogModule,
+    MinioClientModule,
+    ImageUploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
