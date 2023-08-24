@@ -5,39 +5,59 @@ import * as mongoose from 'mongoose';
 
 @Injectable()
 export class UserService {
-    constructor(
-        @InjectModel(User.name) 
-        private readonly userModel: mongoose.Model<User>,
-    ) {}
-    
-    async findAll(): Promise<User[]> {
-        const users = await this.userModel.find().exec();
-        return users;
+  constructor(
+    @InjectModel(User.name)
+    private readonly userModel: mongoose.Model<User>,
+  ) {}
+
+  async findAll(): Promise<User[]> {
+    const users = await this.userModel.find().exec();
+    return users;
+  }
+
+  async create(user: User): Promise<User> {
+    const createdUser = await this.userModel.create(user);
+    return createdUser;
+  }
+
+  async findById(id: string): Promise<User> {
+    const user = await this.userModel.findById(id).exec();
+
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
 
-    async create(user: User): Promise<User> {
-        const createdUser = await this.userModel.create(user);
-        return createdUser;
+    return user;
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    const user = this.userModel.findOne({ email: email });
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
 
-    async findById(id: string): Promise<User> {
-        const user = await this.userModel.findById(id).exec();
+    return user;
+  }
 
-        if(!user){
-            throw new NotFoundException('User not found');
-        }
-        
-        return user;
+  async findByEmailReturnId(email: string) {
+    const user = this.userModel.findOne({ email: email });
+    if (!user) {
+      return null;
     }
 
-    async updateById(id: string, user: User): Promise<User> {
-        return await this.userModel.findByIdAndUpdate(id, user, {
-            new: true,
-            runValidators: true,
-        }).exec();
-    }
+    return (await user).id;
+  }
 
-    async deleteById(id: string): Promise<User> {
-        return await this.userModel.findByIdAndDelete(id).exec();
-    }
+  async updateById(id: string, user: User): Promise<User> {
+    return await this.userModel
+      .findByIdAndUpdate(id, user, {
+        new: true,
+        runValidators: true,
+      })
+      .exec();
+  }
+
+  async deleteById(id: string): Promise<User> {
+    return await this.userModel.findByIdAndDelete(id).exec();
+  }
 }
