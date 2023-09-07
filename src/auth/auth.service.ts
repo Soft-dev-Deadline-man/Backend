@@ -2,11 +2,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client } from 'google-auth-library';
 import { TokenPayload } from './interface/tokenPayload.interface';
-import { AuthLogin } from './dto/auth-login.dto';
 import { User } from '../User/schemas/user.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from 'src/User/user.service';
+import { AuthEmail, AuthGoogleLogin } from './dto/auth-login.dto';
 
 const client = new OAuth2Client(
   process.env.GOOGLE_OAUTH_CLIENTID,
@@ -24,7 +24,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async registerWithEmailPassword(email: string, password: string) {
+  async registWithEmailPassword({ email, password }: AuthEmail) {
     const user = await this.userService.findByEmail(email);
 
     if (!user) {
@@ -49,13 +49,13 @@ export class AuthService {
     }
   }
 
-  async loginWithEmailPassword(email: string, inputPassword: string) {
+  async loginWithEmailPassword({ email, password }: AuthEmail) {
     const user = await this.userService.findByEmail(email);
     if (!user) {
       throw new NotFoundException('user not found');
     }
 
-    const isMatch = await bcrypt.compare(inputPassword, user.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) {
       const userId = await this.userService.findByEmailReturnId(user.email);
       return {
@@ -68,7 +68,7 @@ export class AuthService {
     }
   }
 
-  async authenticateWithGoogleOAuth({ credential }: AuthLogin) {
+  async authenticateWithGoogleOAuth({ credential }: AuthGoogleLogin) {
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: process.env.GOOGLE_OAUTH_CLIENTID,
