@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client } from 'google-auth-library';
 import { TokenPayload } from './interface/tokenPayload.interface';
@@ -13,6 +13,8 @@ const client = new OAuth2Client(
   process.env.GOOGLE_OAUTH_CLIENTSECRET,
 );
 
+const bcrypt = require('bcrypt');
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -21,6 +23,50 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
+
+  async registerWithEmailPassword(email: string, password: string) {
+    const user = await this.userService.findByEmail(email);
+
+    if (!user) {
+      let hashedPassword;
+      try {
+        const saltRounds = 10; //can keep in .env
+        hashedPassword = bcrypt.hashSync(password, saltRounds);
+      } catch (err) {
+        return {
+          error: err,
+        };
+      }
+      const newUser = new this.userModel({
+        email: email,
+        password: hashedPassword,
+      });
+      await newUser.save();
+
+      return {
+        accessToken: this.generateAccessToken(newUser.id),
+      };
+    }
+  }
+
+  async loginWithEmailPassword(email: string, inputPassword: string) {
+    const user = await this.userService.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException('user not found');
+    }
+
+    const isMatch = await bcrypt.compare(inputPassword, user.password);
+    if (isMatch) {
+      const userId = await this.userService.findByEmailReturnId(user.email);
+      return {
+        accessToken: this.generateAccessToken(userId),
+      };
+    } else {
+      return {
+        error: 'wrong password',
+      };
+    }
+  }
 
   async authenticateWithGoogleOAuth({ credential }: AuthLogin) {
     const ticket = await client.verifyIdToken({
@@ -31,25 +77,26 @@ export class AuthService {
     const { email } = ticket.getPayload();
     const user = await this.userService.findByEmail(email);
     if (!user) {
-      const newUser = new this.userModel();
-      newUser.email = email;
+      const newUser = new this.userModel({
+        email: email,
+      });
       await newUser.save();
       return {
         accessToken: this.generateAccessToken(newUser.id),
       };
     }
 
-    const userEmail = await this.userService.findByEmailReturnId(user.email);
+    const userId = await this.userService.findByEmailReturnId(user.email);
 
     return {
-      accessToken: this.generateAccessToken(userEmail),
+      accessToken: this.generateAccessToken(userId),
     };
   }
 
   private generateAccessToken(userId: string) {
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
-      secret: 'some-secret',
+      secret: 'some-secret', //can keep in .env
       expiresIn: '1d',
     });
     return token;
