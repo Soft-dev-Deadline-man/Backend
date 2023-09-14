@@ -24,7 +24,12 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async registWithEmailPassword({ email, password }: AuthEmail) {
+  async registWithEmailPassword({
+    email,
+    password,
+    firstname,
+    lastname,
+  }: AuthEmail) {
     const user = await this.userService.findByEmail(email);
 
     if (!user) {
@@ -40,6 +45,8 @@ export class AuthService {
       const newUser = new this.userModel({
         email: email,
         password: hashedPassword,
+        firstName: firstname,
+        lastName: lastname,
       });
       await newUser.save();
 
@@ -74,11 +81,14 @@ export class AuthService {
       audience: process.env.GOOGLE_OAUTH_CLIENTID,
     });
 
-    const { email } = ticket.getPayload();
+    const { email, name, family_name, picture } = ticket.getPayload();
     const user = await this.userService.findByEmail(email);
     if (!user) {
       const newUser = new this.userModel({
         email: email,
+        firstName: name,
+        lastName: family_name,
+        profile: picture,
       });
       await newUser.save();
       return {

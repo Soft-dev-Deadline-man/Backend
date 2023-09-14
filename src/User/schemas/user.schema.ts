@@ -10,13 +10,13 @@ export enum UserRole {
 })
 export class User {
   @Prop()
-  username: string;
-
-  @Prop()
   password: string;
 
   @Prop()
   email: string;
+
+  @Prop()
+  profile: string;
 
   @Prop()
   firstName: string;
@@ -26,6 +26,15 @@ export class User {
 
   @Prop()
   role: UserRole;
+
+  @Prop()
+  phoneNumber: string;
+
+  @Prop()
+  bookmark: string[];
+
+  @Prop()
+  postedBlogs: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -1,11 +1,13 @@
-import { UserRole } from "../schemas/user.schema";
-
+import { UserRole } from '../schemas/user.schema';
 
 export class UpdateUserDto {
-    readonly username: string;
-    readonly password: string;
-    readonly email: string;
-    readonly firstName: string;
-    readonly lastName: string;
-    readonly role: UserRole;
+  readonly password: string;
+  readonly email: string;
+  readonly profile: string;
+  readonly firstName: string;
+  readonly lastName: string;
+  readonly phoneNumber: string;
+  readonly role: UserRole;
+  readonly bookmark: string[];
+  readonly postedBlogs: string[];
 }
