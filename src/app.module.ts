@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { BlogModule } from './blog/blog.module';
 import { MinioClientModule } from './minio-client/minio-client.module';
 import { ImageUploadModule } from './image-upload/image-upload.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ImageUploadModule } from './image-upload/image-upload.module';
     BlogModule,
     MinioClientModule,
     ImageUploadModule,
+    FileUploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

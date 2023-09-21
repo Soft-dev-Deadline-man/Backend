@@ -90,6 +90,16 @@ export class MinioClientService {
         return { url: `${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${process.env.MINIO_BUCKET_NAME}/${fileName}` }
     }
 
+    public async uploadMultiple(files: BufferedFile[], bucketName: string = this.bucketName) {
+        let urls = [];
+        for(let file of files) {
+            urls.push(await this.upload(file, bucketName));
+        }
+
+        // Return array of urls
+        return urls;
+      }
+
     async delete(fileName: string, bucketName: string = this.bucketName) {
         this.client.removeObject(bucketName, fileName, (err) => {
             if(err) {
