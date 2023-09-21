@@ -19,16 +19,13 @@ export class User {
   profile: string;
 
   @Prop()
-  firstName: string;
-
-  @Prop()
-  lastName: string;
+  name: string;
 
   @Prop()
   role: UserRole;
 
   @Prop()
-  phoneNumber: string;
+  bio: string;
 
   @Prop()
   bookmark: string[];

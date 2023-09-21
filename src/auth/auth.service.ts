@@ -86,8 +86,7 @@ export class AuthService {
     if (!user) {
       const newUser = new this.userModel({
         email: email,
-        firstName: name,
-        lastName: family_name,
+        name: name + ' ' + family_name,
         profile: picture,
       });
       await newUser.save();
