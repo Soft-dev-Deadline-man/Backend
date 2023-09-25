@@ -7,11 +7,34 @@ export class ImageUploadService {
     constructor(private minioClientService: MinioClientService) {}
 
     async uploadImage(file: BufferedFile) {
-        const uploaded_image = await this.minioClientService.upload(file);
+        try{
+            const uploaded_image = await this.minioClientService.upload(file);
+    
+            return {
+                image_url: uploaded_image.url,
+                message: 'Image uploaded successfully'
+            };
+        }
+        catch(err){
+            return {
+                message: "Image uploaded failed"
+            }
+        }
+    }
 
-        return {
-            image_url: uploaded_image.url,
-            message: 'Image uploaded successfully'
-        };
+    async uploadMultipleImages(images: BufferedFile[]){
+        try{
+            const uploadImages = await this.minioClientService.uploadMultiple(images);
+    
+            return {
+                images_url: uploadImages,
+                message: "Images uploaded successfully"
+            }
+        }
+        catch(err){
+            return {
+                message: "Images uploaded failed"
+            }
+        }
     }
 }
