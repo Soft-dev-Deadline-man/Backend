@@ -1,9 +1,9 @@
-import { Contact, EntrancePrice, SeparateRating } from '../schemas/blog.schema';
+import { Category, Contact, EntrancePrice, SeparateRating } from '../schemas/blog.schema';
 
 export class CreateBlogDto {
   readonly title: string;
-  readonly catagory: string;
-  readonly entrancePrice: EntrancePrice[];
+  readonly category: Category;
+  readonly entrancePrice: EntrancePrice;
 
   readonly address: string;
   readonly rating: number;

@@ -1,5 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
+export enum Category {
+    BEACH = "ชายหาดและทะเล",
+    SHOP = "ช็อปปิ้ง",
+    HISTORY = "ประวัติศาสตร์ วัฒนธรรม และศาสนา",
+    ENTERTAIN = "สวนสัตว์ สวนน้ำ และสวนสนุก",
+    MESEUM = "พิพิธภัณฑ์ และแหล่งเรียนรู้ทางธรรมชาติ",
+}
+
 export class EntrancePrice {
   @Prop()
   ageRange: string;
@@ -32,10 +40,10 @@ export class Blog {
   title: string;
 
   @Prop()
-  catagory: string;
+  category: Category;
 
   @Prop()
-  entrancePrice: EntrancePrice[];
+  entrancePrice: EntrancePrice;
 
   @Prop()
   address: string;
