@@ -1,11 +1,29 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 export enum Category {
-    BEACH = "ชายหาดและทะเล",
-    SHOP = "ช็อปปิ้ง",
-    HISTORY = "ประวัติศาสตร์ วัฒนธรรม และศาสนา",
-    ENTERTAIN = "สวนสัตว์ สวนน้ำ และสวนสนุก",
-    MESEUM = "พิพิธภัณฑ์ และแหล่งเรียนรู้ทางธรรมชาติ",
+  BEACH = "ชายหาดและทะเล",
+  SHOP = "ช็อปปิ้ง",
+  HISTORY = "ประวัติศาสตร์ วัฒนธรรม และศาสนา",
+  ENTERTAIN = "สวนสัตว์ สวนน้ำ และสวนสนุก",
+  MESEUM = "พิพิธภัณฑ์ และแหล่งเรียนรู้ทางธรรมชาติ",
+}
+
+export enum Days {
+  MONDAY = "จันทร์",
+  TUESDAY = "อังคาร",
+  WEDNESDAY = "พุธ",
+  THURSDAY = "พฤหัสบดี",
+  FRIDAY = "ศุกร์",
+  SATURDAY = "เสาร์",
+  SUNDAY = "อาทิตย์",
+}
+
+export class OpenTime {
+  @Prop()
+  day: Days;
+
+  @Prop()
+  time: string;
 }
 
 export class EntrancePrice {
@@ -35,12 +53,16 @@ export class Contact {
 @Schema({
   timestamps: true,
 })
+
 export class Blog {
   @Prop()
   title: string;
 
   @Prop()
   category: Category;
+
+  @Prop()
+  openTime: OpenTime[];
 
   @Prop()
   entrancePrice: EntrancePrice;
