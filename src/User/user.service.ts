@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import * as mongoose from 'mongoose';
 
+const bcrypt = require('bcrypt');
+
 @Injectable()
 export class UserService {
   constructor(
@@ -46,6 +48,27 @@ export class UserService {
     }
 
     return (await user).id;
+  }
+
+  async findByIdAndChangePassword(id: string, password: string) {
+    const user = this.userModel.findById(id).exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    let hashedPassword;
+    try {
+      const saltRounds = 10; //can keep in .env
+      hashedPassword = bcrypt.hashSync(password, saltRounds);
+    } catch (err) {
+      return {
+        error: err,
+      };
+    }
+
+    return await this.userModel.findByIdAndUpdate(id, {
+      password: hashedPassword,
+    });
   }
 
   async updateById(id: string, user: User): Promise<User> {
