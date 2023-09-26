@@ -1,27 +1,68 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+
+export class EntrancePrice {
+  @Prop()
+  ageRange: string;
+
+  @Prop()
+  price: string;
+}
+
+export class SeparateRating {
+  @Prop()
+  star: string;
+
+  @Prop()
+  quantity: string;
+}
+
+export class Contact {
+  @Prop()
+  name: string;
+
+  @Prop()
+  link: string;
+}
 
 @Schema({
-    timestamps: true,
+  timestamps: true,
 })
-
 export class Blog {
-    @Prop()
-    title: string;
+  @Prop()
+  title: string;
 
-    @Prop()
-    description: string;
+  @Prop()
+  catagory: string;
 
-    @Prop()
-    content: string;
-    
-    @Prop()
-    authorID: string;
+  @Prop()
+  entrancePrice: EntrancePrice[];
 
-    @Prop()
-    likes: number;
+  @Prop()
+  address: string;
 
-    @Prop()
-    comment: string;
+  @Prop()
+  rating: number;
+
+  @Prop()
+  separateRating: SeparateRating[];
+
+  @Prop()
+  reviews: any;
+
+  @Prop()
+  latitude: string;
+
+  @Prop()
+  longitude: string;
+
+  @Prop()
+  forbidden: string[];
+
+  @Prop()
+  contact: Contact[];
+
+  @Prop()
+  images: string[];
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);
