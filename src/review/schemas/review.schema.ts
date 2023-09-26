@@ -15,6 +15,12 @@ export class Review {
   description: string;
 
   @Prop()
+  recommendActivity: string;
+
+  @Prop()
+  spendTime: string;
+
+  @Prop()
   rating: number;
 
   @Prop()

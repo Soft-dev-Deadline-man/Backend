@@ -32,6 +32,8 @@ export class ReviewController {
       returnReviewDto.blogId = review.blogId;
       returnReviewDto.title = review.title;
       returnReviewDto.description = review.description;
+      returnReviewDto.recommendActivity = review.recommendActivity;
+      returnReviewDto.spendTime = review.spendTime;
       returnReviewDto.rating = review.rating;
       returnReviewDto.score = review.score;
       returnReviewDto.images = review.images;
