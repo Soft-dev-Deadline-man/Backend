@@ -22,7 +22,7 @@ services:
       - network-frontend
       - network-backend
   mongo:
-    image: mongo
+    image: mongo:4.4.24
     container_name: mongo
     restart: unless-stopped
     volumes:
