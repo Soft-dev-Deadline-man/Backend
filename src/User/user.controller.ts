@@ -12,6 +12,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -41,6 +42,26 @@ export class UserController {
     return await this.userService.updateById(id, user);
   }
 
+  @Post()
+  async changePassword(
+    @Param('id') id: string,
+    @Body() changePasswordDto: ChangePasswordDto,
+  ): Promise<any> {
+    
+  }
+
+  @Get(':id')
+  async getUser(@Param('id') id: string): Promise<User> {
+    return await this.userService.findById(id);
+  }
+
+  @Put(':id')
+  async updateUser(
+    @Param('id') id: string,
+    @Body() user: UpdateUserDto,
+  ): Promise<User> {
+    return await this.userService.updateById(id, user);
+  }
   @Delete(':id')
   async deleteUser(@Param('id') id: string): Promise<User> {
     return await this.userService.deleteById(id);
