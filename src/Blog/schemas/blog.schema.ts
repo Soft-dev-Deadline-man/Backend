@@ -1,12 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { now } from 'mongoose';
 import { Review } from 'src/review/schemas/review.schema';
 
 export enum Category {
-  BEACH = "ชายหาดและทะเล",
-  SHOP = "ช็อปปิ้ง",
-  HISTORY = "ประวัติศาสตร์ วัฒนธรรม และศาสนา",
-  ENTERTAIN = "สวนสัตว์ สวนน้ำ และสวนสนุก",
-  MESEUM = "พิพิธภัณฑ์ และแหล่งเรียนรู้ทางธรรมชาติ",
+  beach = "ชายหาดและทะเล",
+  shop = "ช็อปปิ้ง",
+  history = "ประวัติศาสตร์ วัฒนธรรม และศาสนา",
+  entertain = "สวนสัตว์ สวนน้ำ และสวนสนุก",
+  meseum = "พิพิธภัณฑ์ และแหล่งเรียนรู้ทางธรรมชาติ",
 }
 
 export enum Days {
@@ -19,9 +20,31 @@ export enum Days {
   SUNDAY = "อาทิตย์",
 }
 
+export enum forbidden {
+  animal = "",
+  smoke = "",
+  alcohol = "",
+}
+
+export enum contact {
+  tel = "",
+  website = "",
+  facebook = "",
+  ig = ""
+}
+
+export enum entrancePrice {
+  child = "",
+  adult = "",
+  foreign = "",
+}
+
 export class OpenTime {
   @Prop()
-  day: Days;
+  day: {
+    start: Days;
+    end: Days;
+  }
 
   @Prop()
   time: string;
@@ -94,6 +117,12 @@ export class Blog {
 
   @Prop()
   images: string[];
+
+  @Prop({default: now()})
+  createdAt: Date;
+
+  @Prop({default: now()})
+  updatedAt: Date;
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);
