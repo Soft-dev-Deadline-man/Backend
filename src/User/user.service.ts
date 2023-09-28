@@ -65,9 +65,11 @@ export class UserService {
       };
     }
 
-    return await this.userModel.findByIdAndUpdate(id, {
+    await this.userModel.findByIdAndUpdate(id, {
       password: hashedPassword,
     });
+
+    return "update password successful"
   }
 
   async updateById(id: string, user: User): Promise<User> {
