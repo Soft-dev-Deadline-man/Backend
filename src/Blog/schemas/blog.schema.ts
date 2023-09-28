@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Review } from 'src/review/schemas/review.schema';
 
 export enum Category {
   BEACH = "ชายหาดและทะเล",
@@ -77,7 +78,7 @@ export class Blog {
   separateRating: SeparateRating[];
 
   @Prop()
-  reviews: any;
+  reviews: Review[];
 
   @Prop()
   latitude: string;
