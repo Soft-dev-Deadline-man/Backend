@@ -9,11 +9,15 @@ services:
       - mongo
       - minio
     ports:
-      - '${APP_PORT}:${APP_PORT}'
+      - '${APP_PORT}:$${APP_PORT}'
     environment:
       - MONGO_URI=${MONGO_URI}
-    env_file:
-      - .env
+      - MINIO_ENDPOINT=${MINIO_ENDPOINT}
+      - MINIO_PORT=${MINIO_PORT}
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_USE_SSL=${MINIO_USE_SSL}
+      - MINIO_BUCKET_NAME=${MINIO_BUCKET_NAME}
     networks:
       - network-backend
   mongo:
@@ -23,8 +27,8 @@ services:
     volumes:
       - ~/mongo/data:/data/db
     environment:
-      MONGODB_INITDB_ROOT_USERNAME: ${MONGODB_INITDB_ROOT_USERNAME}
-      MONGODB_INITDB_ROOT_PASSWORD: ${MONGODB_INITDB_ROOT_PASSWORD}
+      - MONGODB_INITDB_ROOT_USERNAME=${MONGODB_INITDB_ROOT_USERNAME}
+      - MONGODB_INITDB_ROOT_PASSWORD=${MONGODB_INITDB_ROOT_PASSWORD}
     env_file:
       - .env.db
     ports:
@@ -43,6 +47,6 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-    env_file:
-      - .env.db
+    networks:
+      - network-backendo
     command: server /data --console-address ":9090"
