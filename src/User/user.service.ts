@@ -3,59 +3,83 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import * as mongoose from 'mongoose';
 
+const bcrypt = require('bcrypt');
+
 @Injectable()
 export class UserService {
-    constructor(
-        @InjectModel(User.name) 
-        private readonly userModel: mongoose.Model<User>,
-    ) {}
-    
-    async findAll(): Promise<User[]> {
-        const users = await this.userModel.find().exec();
-        return users;
+  constructor(
+    @InjectModel(User.name)
+    private readonly userModel: mongoose.Model<User>,
+  ) {}
+
+  async findAll(): Promise<User[]> {
+    const users = await this.userModel.find().exec();
+    return users;
+  }
+
+  async create(user: User): Promise<User> {
+    const createdUser = await this.userModel.create(user);
+    return createdUser;
+  }
+
+  async findById(id: string): Promise<User> {
+    const user = await this.userModel.findById(id).exec();
+
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
 
-    async create(user: User): Promise<User> {
-        const createdUser = await this.userModel.create(user);
-        return createdUser;
+    return user;
+  }
+
+  async findByEmail(email: string): Promise<User> {
+    const user = this.userModel.findOne({ email: email });
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
 
-    async findById(id: string): Promise<User> {
-        const user = await this.userModel.findById(id).exec();
+    return user;
+  }
 
-        if(!user){
-            throw new NotFoundException('User not found');
-        }
-        
-        return user;
+  async findByEmailReturnId(email: string) {
+    const user = this.userModel.findOne({ email: email });
+    if (!user) {
+      return null;
+    }
+    return (await user).id;
+  }
+
+  async findByIdAndChangePassword(id: string, password: string) {
+    const user = this.userModel.findById(id).exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
 
-    async findByEmail(email: string): Promise<User> {
-        const user = this.userModel.findOne({ email: email });
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
-    
-        return user;
+    let hashedPassword;
+    try {
+      const saltRounds = 10; //can keep in .env
+      hashedPassword = bcrypt.hashSync(password, saltRounds);
+    } catch (err) {
+      return {
+        error: err,
+      };
     }
 
-    async findByEmailReturnId(email: string) {
-        const user = this.userModel.findOne({ email: email });
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
+    return await this.userModel.findByIdAndUpdate(id, {
+      password: hashedPassword,
+    });
+  }
 
-        return (await user).id;
-    }
+  async updateById(id: string, user: User): Promise<User> {
+    return await this.userModel
+      .findByIdAndUpdate(id, user, {
+        new: true,
+        runValidators: true,
+      })
+      .exec();
+  }
 
-    async updateById(id: string, user: User): Promise<User> {
-        return await this.userModel.findByIdAndUpdate(id, user, {
-            new: true,
-            runValidators: true,
-        }).exec();
-    }
-
-    async deleteById(id: string): Promise<User> {
-        return await this.userModel.findByIdAndDelete(id).exec();
-    }
+  async deleteById(id: string): Promise<User> {
+    return await this.userModel.findByIdAndDelete(id).exec();
+  }
 }
