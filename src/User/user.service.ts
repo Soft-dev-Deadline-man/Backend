@@ -46,7 +46,6 @@ export class UserService {
     if (!user) {
       return null;
     }
-
     return (await user).id;
   }
 
