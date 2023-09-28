@@ -22,6 +22,7 @@ env:
 
 jobs:
   deploy:
+    name: Deploy
     runs-on: self-hosted
     steps:
       - name: Copy repository
