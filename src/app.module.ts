@@ -8,6 +8,9 @@ import { BlogModule } from './blog/blog.module';
 import { MinioClientModule } from './minio-client/minio-client.module';
 import { ImageUploadModule } from './image-upload/image-upload.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
+import { ReviewModule } from './review/review.module';
+import { AuthModule } from './auth/auth.module';
+import { BlogModule } from './Blog/blog.module';
 
 @Module({
   imports: [
@@ -21,6 +24,9 @@ import { FileUploadModule } from './file-upload/file-upload.module';
     MinioClientModule,
     ImageUploadModule,
     FileUploadModule,
+    ReviewModule,
+    AuthModule,
+    BlogModule
   ],
   controllers: [AppController],
   providers: [AppService],
