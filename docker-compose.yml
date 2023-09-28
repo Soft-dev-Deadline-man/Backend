@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: backend
     restart: unless-stopped
     depends_on:
       - mongo
