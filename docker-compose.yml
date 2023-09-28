@@ -19,6 +19,7 @@ services:
       - MINIO_USE_SSL
       - MINIO_BUCKET_NAME
     networks:
+      - network-frontend
       - network-backend
   mongo:
     image: mongo
@@ -29,8 +30,6 @@ services:
     environment:
       - MONGODB_INITDB_ROOT_USERNAME
       - MONGODB_INITDB_ROOT_PASSWORD
-    env_file:
-      - .env.db
     ports:
       - 27017:27017
     networks:
@@ -48,5 +47,11 @@ services:
       - MINIO_ROOT_USER
       - MINIO_ROOT_PASSWORD
     networks:
-      - network-backendo
+      - network-backend
     command: server /data --console-address ":9090"
+
+networks:
+  network-frontend:
+    driver: bridge
+  network-backend:
+    driver: bridge
