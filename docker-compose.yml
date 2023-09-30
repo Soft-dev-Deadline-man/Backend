@@ -53,6 +53,8 @@ services:
 
 networks:
   network-frontend:
+    name: network-frontend
     driver: bridge
   network-backend:
+    name: network-backend
     driver: bridge
