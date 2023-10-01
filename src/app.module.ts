@@ -1,5 +1,5 @@
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { Inject, Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './User/user.module';
@@ -9,21 +9,28 @@ import { ImageUploadModule } from './image-upload/image-upload.module';
 import { ReviewModule } from './review/review.module';
 import { AuthModule } from './auth/auth.module';
 import { BlogModule } from './Blog/blog.module';
+import configuration from './config/configuration';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env',
+      load: [configuration],
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.MONGO_URI),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get('mongo.uri'),
+      }),
+      inject: [ConfigService],
+    }),
     UserModule,
     BlogModule,
     MinioClientModule,
     ImageUploadModule,
     ReviewModule,
     AuthModule,
-    BlogModule
+    BlogModule,
   ],
   controllers: [AppController],
   providers: [AppService],

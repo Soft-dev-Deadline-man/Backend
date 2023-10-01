@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { MinioService } from 'nestjs-minio-client';
 import { BufferedFile } from './file.model';
 import * as crypto from 'crypto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MinioClientService {
@@ -21,7 +22,7 @@ export class MinioClientService {
             's3:GetBucketLocation',
             's3:ListBucket',
           ],
-          Resource: ['arn:aws:s3:::test-bucket'], // Change this according to your bucket name
+          Resource: ['arn:aws:s3:::picture-bucket'], // Change this according to your bucket name
         },
         {
           Effect: 'Allow',
@@ -35,7 +36,7 @@ export class MinioClientService {
             's3:GetObject',
             's3:ListMultipartUploadParts',
           ],
-          Resource: ['arn:aws:s3:::test-bucket/*'], // Change this according to your bucket name
+          Resource: ['arn:aws:s3:::picture-bucket/*'], // Change this according to your bucket name
         },
       ],
     };

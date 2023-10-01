@@ -7,11 +7,11 @@ import { ConfigService } from '@nestjs/config';
   imports: [
     MinioModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
-        endPoint: configService.get('MINIO_ENDPOINT'),
-        port: configService.get('MINIO_PORT'),
-        useSSL: configService.get('MINIO_USE_SSL'),
-        accessKey: configService.get('MINIO_ACCESS_KEY'),
-        secretKey: configService.get('MINIO_SECRET_KEY'),
+        endPoint: configService.get<string>('minio.endpoint'),
+        port: configService.get<number>('minio.port'),
+        useSSL: configService.get<boolean>('minio.useSSL'),
+        accessKey: configService.get<string>('minio.accessKey'),
+        secretKey: configService.get<string>('minio.secretKey'),
       }),
       inject: [ConfigService],
     }),
