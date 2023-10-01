@@ -10,7 +10,7 @@ services:
       - mongo
       - minio
     ports:
-      - '${APP_PORT}:${APP_PORT}'
+      - '5000:5000'
     environment:
       - MONGO_URI
       - MINIO_ENDPOINT
