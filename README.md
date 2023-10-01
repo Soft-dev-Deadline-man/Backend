@@ -63,7 +63,7 @@ $ pnpm run test:cov
 ```bash
 $ pnpm run start:dev
 
-# Goto localhost:3000/api
+# Goto localhost:5000/api
 ```
 
 ## Support
