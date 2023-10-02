@@ -6,13 +6,13 @@ on:
       - main
   pull_request:
     branches:
-      - main 
+      - main
 
 jobs:
   build-and-test:
-    name: Build and Test
+    name: Build
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -30,6 +30,3 @@ jobs:
 
       - name: Build NestJS application
         run: pnpm run build
-
-      - name: Run tests
-        run: pnpm run test

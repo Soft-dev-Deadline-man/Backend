@@ -5,4 +5,5 @@ Dockerfile
 .prettierrc
 .gitignore
 .eslintrc.js
+.env
 README.md
