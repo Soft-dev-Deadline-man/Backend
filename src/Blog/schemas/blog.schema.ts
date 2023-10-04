@@ -17,6 +17,7 @@ export enum Days {
   FRIDAY = "ศุกร์",
   SATURDAY = "เสาร์",
   SUNDAY = "อาทิตย์",
+  EVERYDAY = "ทุกวัน",
 }
 
 export class OpenTime {
