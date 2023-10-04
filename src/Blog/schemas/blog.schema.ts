@@ -6,7 +6,7 @@ export enum Category {
   SHOP = "ช็อปปิ้ง",
   HISTORY = "ประวัติศาสตร์ วัฒนธรรม และศาสนา",
   ENTERTAIN = "สวนสัตว์ สวนน้ำ และสวนสนุก",
-  MESEUM = "พิพิธภัณฑ์ และแหล่งเรียนรู้ทางธรรมชาติ",
+  MEUSEUM = "พิพิธภัณฑ์ และแหล่งเรียนรู้ทางธรรมชาติ",
 }
 
 export enum Days {
@@ -38,10 +38,10 @@ export class EntrancePrice {
 
 export class SeparateRating {
   @Prop()
-  star: string;
+  star: number;
 
   @Prop()
-  quantity: string;
+  quantity: number;
 }
 
 export class Contact {
