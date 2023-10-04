@@ -4,7 +4,7 @@ export class UpdateBlogDto {
   readonly title: string;
   readonly category: Category;
   readonly openTime: OpenTime[];
-  readonly entrancePrice: EntrancePrice;
+  readonly entrancePrice: EntrancePrice[];
 
   readonly address: string;
   readonly rating: number;

@@ -18,8 +18,7 @@ export class BlogService {
             _id: blog._id,
             title: blog.title,
             category: blog.category,
-            ageRange: blog.entrancePrice.ageRange,
-            price: blog.entrancePrice.price,
+            entrancePrice: blog.entrancePrice,
             contact: blog.contact,
         }));
       

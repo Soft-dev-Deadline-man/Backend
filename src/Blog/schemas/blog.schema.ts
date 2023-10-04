@@ -67,7 +67,7 @@ export class Blog {
   openTime: OpenTime[];
 
   @Prop()
-  entrancePrice: EntrancePrice;
+  entrancePrice: EntrancePrice[];
 
   @Prop()
   address: string;
