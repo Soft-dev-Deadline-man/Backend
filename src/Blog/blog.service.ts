@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Blog } from './schemas/blog.schema';
 import mongoose from 'mongoose';
+import { BlogSummaryDto } from './dto/get-blog.dto';
 
 @Injectable()
 export class BlogService {
@@ -10,9 +11,18 @@ export class BlogService {
         private readonly blogModel: mongoose.Model<Blog>
     ) {}
 
-    async findAll(): Promise<Blog[]> {
+    async findAll(): Promise<BlogSummaryDto[]> {
         const blogs = await this.blogModel.find().exec();
-        return blogs;
+        
+        const blogSummaries = blogs.map((blog) => ({
+            _id: blog._id,
+            title: blog.title,
+            category: blog.category,
+            entrancePrice: blog.entrancePrice,
+            contact: blog.contact,
+        }));
+      
+        return blogSummaries;
     }
 
     async create(blog: Blog): Promise<Blog> {
