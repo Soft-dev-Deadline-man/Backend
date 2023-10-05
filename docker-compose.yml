@@ -13,6 +13,7 @@ services:
       - '${APP_PORT}:${APP_PORT}'
     environment:
       - APP_PORT
+      - APP_IP
       - MONGO_URI
       - MINIO_ENDPOINT
       - MINIO_PORT

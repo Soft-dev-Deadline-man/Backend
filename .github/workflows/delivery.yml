@@ -9,6 +9,7 @@ on:
 
 env:
   APP_PORT: ${{ secrets.APP_PORT }}
+  APP_IP: ${{ secrets.APP_IP }}
   MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
   MINIO_BUCKET_NAME: ${{ secrets.MINIO_BUCKET_NAME }}
   MINIO_ENDPOINT: ${{ secrets.MINIO_ENDPOINT }}
