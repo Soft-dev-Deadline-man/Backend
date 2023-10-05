@@ -11,4 +11,12 @@ export default () => ({
     useSSL: process.env.MINIO_USE_SSL.toLowerCase() === 'true',
     bucket: process.env.MINIO_BUCKET_NAME,
   },
+  oauth: {
+    id: process.env.GOOGLE_CLIENT_ID,
+    secret: process.env.GOOGLE_CLIENT_SECRET,
+  },
+  credential: {
+    jwt_secret: process.env.JWT_SECRET,
+    bcrypt_salt_round: parseInt(process.env.BCRYPT_SALT_ROUND),
+  },
 });
