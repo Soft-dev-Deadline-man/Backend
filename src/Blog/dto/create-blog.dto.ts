@@ -1,10 +1,10 @@
-import { Category, Contact, EntrancePrice, OpenTime, SeparateRating } from '../schemas/blog.schema';
+import { Category, Contact, EntrancePrice, Forbidden, OpenTime, SeparateRating } from '../schemas/blog.schema';
 
 export class CreateBlogDto {
   readonly title: string;
   readonly category: Category;
   readonly openTime: OpenTime[];
-  readonly entrancePrice: EntrancePrice[];
+  readonly entrancePrice: EntrancePrice;
 
   readonly address: string;
   readonly rating: number;
@@ -14,7 +14,7 @@ export class CreateBlogDto {
   readonly latitude: string;
   readonly longitude: string;
 
-  readonly forbidden: string[];
-  readonly contact: Contact[];
+  readonly forbidden: Forbidden;
+  readonly contact: Contact;
   readonly images: string[];
 }

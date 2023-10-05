@@ -18,11 +18,24 @@ export enum Days {
   SATURDAY = "เสาร์",
   SUNDAY = "อาทิตย์",
   EVERYDAY = "ทุกวัน",
+  WORKDAY = "วันจันทร์ - ศุกร์",
+  DAYOFF = "เสาร์ - อาทิตย์"
+}
+
+export class Forbidden {
+  @Prop()
+  animal: boolean;
+
+  @Prop()
+  smoke : boolean;
+
+  @Prop()
+  alcohol: boolean;
 }
 
 export class OpenTime {
   @Prop()
-  day: Days;
+  day: string;
 
   @Prop()
   time: string;
@@ -30,10 +43,13 @@ export class OpenTime {
 
 export class EntrancePrice {
   @Prop()
-  ageRange: string;
+  child: string;
 
   @Prop()
-  price: string;
+  adult: string;
+
+  @Prop()
+  foreign: string;
 }
 
 export class SeparateRating {
@@ -46,10 +62,16 @@ export class SeparateRating {
 
 export class Contact {
   @Prop()
-  name: string;
+  tel: string;
 
   @Prop()
-  link: string;
+  website: string;
+
+  @Prop()
+  facebook: string;
+
+  @Prop()
+  ig: string;
 }
 
 @Schema({
@@ -67,7 +89,7 @@ export class Blog {
   openTime: OpenTime[];
 
   @Prop()
-  entrancePrice: EntrancePrice[];
+  entrancePrice: EntrancePrice;
 
   @Prop()
   address: string;
@@ -88,10 +110,10 @@ export class Blog {
   longitude: string;
 
   @Prop()
-  forbidden: string[];
+  forbidden: Forbidden;
 
   @Prop()
-  contact: Contact[];
+  contact: Contact;
 
   @Prop()
   images: string[];
