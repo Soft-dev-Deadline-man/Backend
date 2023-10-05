@@ -24,7 +24,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async registWithEmailPassword({ email, password }: AuthEmail) {
+  async registWithEmailPassword({ email, password, name }: AuthEmail) {
     const user = await this.userService.findByEmail(email);
 
     if (!user) {
@@ -40,6 +40,7 @@ export class AuthService {
       const newUser = new this.userModel({
         email: email,
         password: hashedPassword,
+        name: name,
       });
       await newUser.save();
 
