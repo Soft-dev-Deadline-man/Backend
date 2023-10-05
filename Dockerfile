@@ -18,7 +18,7 @@ USER node
 
 # BUILD FOR PRODUCTION
 
-FROM node:18 As build
+FROM node:18-alpine As build
 
 RUN apk add --no-cache curl
 RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
