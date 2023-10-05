@@ -1,5 +1,6 @@
 export default () => ({
-  port: parseInt(process.env.PORT, 10),
+  port: parseInt(process.env.APP_PORT, 10),
+  ip: process.env.APP_IP,
   mongo: {
     uri: process.env.MONGO_URI,
   },

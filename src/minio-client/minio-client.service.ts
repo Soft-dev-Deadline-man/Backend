@@ -119,7 +119,7 @@ export class MinioClientService {
 
     return {
       url: `${this.configService.get<string>(
-        'minio.endpoint',
+        'ip',
       )}:${this.configService.get<number>(
         'minio.port',
       )}/${this.configService.get<string>('minio.bucket')}/${fileName}`,
