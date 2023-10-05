@@ -4,7 +4,5 @@ export class AuthGoogleLogin {
 
 export class AuthEmail {
   email: string;
-  firstname: string;
-  lastname: string;
   password: string;
 }

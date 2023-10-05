@@ -7,6 +7,10 @@ export enum UserRole {
 
 @Schema({
   timestamps: true,
+  toJSON: {
+    virtuals: true,
+  },
+  collection: 'user',
 })
 export class User {
   @Prop()
