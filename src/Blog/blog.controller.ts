@@ -16,7 +16,6 @@ export class BlogController {
     }
 
     @Post()
-    @UsePipes(new ValidationPipe())
     async createNewBlog(@Body() blog: CreateBlogDto):Promise<Blog> {
         return await this.blogService.create(blog);
     }
