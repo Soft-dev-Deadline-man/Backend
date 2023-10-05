@@ -9,11 +9,8 @@ services:
     depends_on:
       - mongo
       - minio
-    ports:
-      - '${APP_PORT}:${APP_PORT}'
     environment:
       - APP_PORT
-      - APP_IP
       - MONGO_URI
       - MINIO_ENDPOINT
       - MINIO_PORT
@@ -25,12 +22,14 @@ services:
       - GOOGLE_CLIENT_SECRET
       - JWT_SECRET
       - BCRYPT_SALT_ROUND
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
     networks:
       - network-frontend
       - network-backend
 
   mongo:
-    image: mongo:4.4.24
+    image: mongo
     container_name: mongo
     restart: unless-stopped
     volumes:

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client } from 'google-auth-library';
 import { TokenPayload } from './interface/tokenPayload.interface';
@@ -6,7 +6,7 @@ import { User } from '../User/schemas/user.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from 'src/User/user.service';
-import { AuthEmail, AuthGoogleLogin } from './dto/auth-login.dto';
+import { AuthEmail, AuthGoogleLogin, RegistEmail } from './dto/auth-login.dto';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 
@@ -20,17 +20,15 @@ export class AuthService {
     private readonly configService: ConfigService,
   ) {}
 
-  async registWithEmailPassword({ email, password, name }: AuthEmail) {
+  async registWithEmailPassword({ email, password, name }: RegistEmail) {
     try {
       const user = await this.userService.findByEmail(email);
+
       if (!user) {
         const saltRounds = this.configService.get<number>(
           'credential.bcrypt_salt_round',
         );
-        // console.log(email, password, name);
-        // const hashedPassword = bcrypt.hashSync(password, saltRounds);
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
-        // console.log(hashedPassword);
+        const hashedPassword = bcrypt.hashSync(password, saltRounds);
 
         const newUser = new this.userModel({
           email: email,
@@ -38,7 +36,7 @@ export class AuthService {
           name: name,
         });
 
-        await newUser.save();
+        newUser.save();
 
         return {
           accessToken: this.generateAccessToken(newUser.id),
@@ -49,8 +47,6 @@ export class AuthService {
         };
       }
     } catch (error) {
-      // Log the error for debugging purposes
-      // console.error('Error in registWithEmailPassword:', error);
       return {
         error: 'Registration failed',
       };
@@ -61,7 +57,7 @@ export class AuthService {
     const user = await this.userService.findByEmail(email);
     if (!user) {
       return {
-        error: 'user not found',
+        error: 'User not found',
       };
       // throw new NotFoundException('user not found');
     }
@@ -74,7 +70,7 @@ export class AuthService {
       };
     } else {
       return {
-        error: 'wrong password',
+        error: 'Wrong password',
       };
     }
   }

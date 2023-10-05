@@ -1,7 +1,7 @@
-import { Body, Controller, HttpException, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { AuthGoogleLogin, AuthEmail } from './dto/auth-login.dto';
+import { AuthGoogleLogin, AuthEmail, RegistEmail } from './dto/auth-login.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -13,16 +13,22 @@ export class AuthController {
     try {
       return await this.authService.authenticateWithGoogleOAuth(authLogin);
     } catch (err) {
-      throw new HttpException('Google OAuth authentication failed', err.status);
+      return {
+        error: 'Google OAuth failed',
+      };
+      // throw new HttpException('Google OAuth authentication failed', err.status);
     }
   }
 
   @Post('regist-email')
-  async registWithEmailPassword(@Body() authEmail: AuthEmail) {
+  async registWithEmailPassword(@Body() authEmail: RegistEmail) {
     try {
       return await this.authService.registWithEmailPassword(authEmail);
     } catch (err) {
-      throw new HttpException('Register failed', err.status);
+      // throw new HttpException('Register failed', err.status);
+      return {
+        error: 'Register failed',
+      };
     }
   }
 
@@ -31,7 +37,10 @@ export class AuthController {
     try {
       return await this.authService.loginWithEmailPassword(authEmail);
     } catch (err) {
-      throw new HttpException('Login failed', err.status);
+      return {
+        error: 'Login failed',
+      };
+      // throw new HttpException('Login failed', err.status);
     }
   }
 }

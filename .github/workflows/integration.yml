@@ -28,5 +28,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Lint NestJS application
+        run: pnpm run lint
+
       - name: Build NestJS application
         run: pnpm run build

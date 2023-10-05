@@ -119,7 +119,7 @@ export class MinioClientService {
 
     return {
       url: `${this.configService.get<string>(
-        'ip',
+        'minio.endpoint',
       )}:${this.configService.get<number>(
         'minio.port',
       )}/${this.configService.get<string>('minio.bucket')}/${fileName}`,
@@ -130,8 +130,8 @@ export class MinioClientService {
     files: BufferedFile[],
     bucketName: string = this.bucketName,
   ) {
-    let urls = [];
-    for (let file of files) {
+    const urls = [];
+    for (const file of files) {
       urls.push(await this.upload(file, bucketName));
     }
 

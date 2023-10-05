@@ -2,24 +2,24 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Review } from 'src/review/schemas/review.schema';
 
 export enum Category {
-  BEACH = "ชายหาดและทะเล",
-  SHOP = "ช็อปปิ้ง",
-  HISTORY = "ประวัติศาสตร์ วัฒนธรรม และศาสนา",
-  ENTERTAIN = "สวนสัตว์ สวนน้ำ และสวนสนุก",
-  MEUSEUM = "พิพิธภัณฑ์ และแหล่งเรียนรู้ทางธรรมชาติ",
+  BEACH = 'ชายหาดและทะเล',
+  SHOP = 'ช็อปปิ้ง',
+  HISTORY = 'ประวัติศาสตร์ วัฒนธรรม และศาสนา',
+  ENTERTAIN = 'สวนสัตว์ สวนน้ำ และสวนสนุก',
+  MEUSEUM = 'พิพิธภัณฑ์ และแหล่งเรียนรู้ทางธรรมชาติ',
 }
 
 export enum Days {
-  MONDAY = "จันทร์",
-  TUESDAY = "อังคาร",
-  WEDNESDAY = "พุธ",
-  THURSDAY = "พฤหัสบดี",
-  FRIDAY = "ศุกร์",
-  SATURDAY = "เสาร์",
-  SUNDAY = "อาทิตย์",
-  EVERYDAY = "ทุกวัน",
-  WORKDAY = "วันจันทร์ - ศุกร์",
-  DAYOFF = "เสาร์ - อาทิตย์"
+  MONDAY = 'จันทร์',
+  TUESDAY = 'อังคาร',
+  WEDNESDAY = 'พุธ',
+  THURSDAY = 'พฤหัสบดี',
+  FRIDAY = 'ศุกร์',
+  SATURDAY = 'เสาร์',
+  SUNDAY = 'อาทิตย์',
+  EVERYDAY = 'ทุกวัน',
+  WORKDAY = 'วันจันทร์ - ศุกร์',
+  DAYOFF = 'เสาร์ - อาทิตย์',
 }
 
 export class Forbidden {
@@ -27,7 +27,7 @@ export class Forbidden {
   animal: boolean;
 
   @Prop()
-  smoke : boolean;
+  smoke: boolean;
 
   @Prop()
   alcohol: boolean;
@@ -77,7 +77,6 @@ export class Contact {
 @Schema({
   timestamps: true,
 })
-
 export class Blog {
   @Prop()
   title: string;

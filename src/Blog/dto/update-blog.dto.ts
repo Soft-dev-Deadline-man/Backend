@@ -1,4 +1,11 @@
-import { Category, Contact, EntrancePrice, Forbidden, OpenTime, SeparateRating } from '../schemas/blog.schema';
+import {
+  Category,
+  Contact,
+  EntrancePrice,
+  Forbidden,
+  OpenTime,
+  SeparateRating,
+} from '../schemas/blog.schema';
 
 export class UpdateBlogDto {
   readonly title: string;

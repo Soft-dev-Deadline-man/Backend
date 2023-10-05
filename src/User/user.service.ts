@@ -2,14 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import * as mongoose from 'mongoose';
-
-const bcrypt = require('bcrypt');
+import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name)
     private readonly userModel: mongoose.Model<User>,
+    private readonly configService: ConfigService,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -57,7 +58,9 @@ export class UserService {
 
     let hashedPassword;
     try {
-      const saltRounds = 10; //can keep in .env
+      const saltRounds = this.configService.get<number>(
+        'credential.bcrypt_salt_round',
+      );
       hashedPassword = bcrypt.hashSync(password, saltRounds);
     } catch (err) {
       return {

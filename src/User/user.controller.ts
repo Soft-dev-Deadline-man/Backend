@@ -38,7 +38,12 @@ export class UserController {
   async changePassword(
     @Param('id') id: string,
     @Body() changePasswordDto: ChangePasswordDto,
-  ): Promise<any> {}
+  ): Promise<User | unknown> {
+    return await this.userService.findByIdAndChangePassword(
+      id,
+      changePasswordDto.password,
+    );
+  }
 
   @Put(':id')
   async updateUser(
@@ -47,7 +52,7 @@ export class UserController {
   ): Promise<User> {
     return await this.userService.updateById(id, user);
   }
-  
+
   @Delete(':id')
   async deleteUser(@Param('id') id: string): Promise<User> {
     return await this.userService.deleteById(id);
