@@ -1,11 +1,11 @@
 export default () => ({
-  port: parseInt(process.env.PORT) || 5000,
+  port: parseInt(process.env.PORT, 10),
   mongo: {
     uri: process.env.MONGO_URI,
   },
   minio: {
     endpoint: process.env.MINIO_ENDPOINT,
-    port: parseInt(process.env.MINIO_PORT) || 9000,
+    port: parseInt(process.env.MINIO_PORT, 10),
     accessKey: process.env.MINIO_ACCESS_KEY,
     secretKey: process.env.MINIO_SECRET_KEY,
     useSSL: process.env.MINIO_USE_SSL.toLowerCase() === 'true',
@@ -17,6 +17,6 @@ export default () => ({
   },
   credential: {
     jwt_secret: process.env.JWT_SECRET,
-    bcrypt_salt_round: parseInt(process.env.BCRYPT_SALT_ROUND),
+    bcrypt_salt_round: parseInt(process.env.BCRYPT_SALT_ROUND, 10),
   },
 });

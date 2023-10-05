@@ -55,6 +55,7 @@ services:
       - MINIO_ROOT_USER
       - MINIO_ROOT_PASSWORD
     networks:
+      - network-frontend
       - network-backend
     command: server /data --console-address ":9090"
 

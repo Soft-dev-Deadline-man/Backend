@@ -8,7 +8,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from 'src/User/user.service';
 import { AuthEmail, AuthGoogleLogin } from './dto/auth-login.dto';
 import { ConfigService } from '@nestjs/config';
-import bcrypt from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -21,29 +21,38 @@ export class AuthService {
   ) {}
 
   async registWithEmailPassword({ email, password, name }: AuthEmail) {
-    const user = await this.userService.findByEmail(email);
-
-    if (!user) {
-      let hashedPassword;
-      try {
+    try {
+      const user = await this.userService.findByEmail(email);
+      if (!user) {
         const saltRounds = this.configService.get<number>(
           'credential.bcrypt_salt_round',
         );
-        hashedPassword = bcrypt.hashSync(password, saltRounds);
-      } catch (err) {
+        // console.log(email, password, name);
+        // const hashedPassword = bcrypt.hashSync(password, saltRounds);
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        // console.log(hashedPassword);
+
+        const newUser = new this.userModel({
+          email: email,
+          password: hashedPassword,
+          name: name,
+        });
+
+        await newUser.save();
+
         return {
-          error: err,
+          accessToken: this.generateAccessToken(newUser.id),
+        };
+      } else {
+        return {
+          error: 'User with this email already exists',
         };
       }
-      const newUser = new this.userModel({
-        email: email,
-        password: hashedPassword,
-        name: name,
-      });
-      await newUser.save();
-
+    } catch (error) {
+      // Log the error for debugging purposes
+      // console.error('Error in registWithEmailPassword:', error);
       return {
-        accessToken: this.generateAccessToken(newUser.id),
+        error: 'Registration failed',
       };
     }
   }
@@ -51,7 +60,10 @@ export class AuthService {
   async loginWithEmailPassword({ email, password }: AuthEmail) {
     const user = await this.userService.findByEmail(email);
     if (!user) {
-      throw new NotFoundException('user not found');
+      return {
+        error: 'user not found',
+      };
+      // throw new NotFoundException('user not found');
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -72,8 +84,6 @@ export class AuthService {
       this.configService.get<string>('oauth.id'),
       this.configService.get<string>('oauth.secret'),
     );
-    console.log(this.configService.get<string>('oauth.id'));
-    console.log(this.configService.get<string>('oauth.secret'));
     const ticket = await client.verifyIdToken({
       idToken: credential,
       audience: this.configService.get('oauth.id'),
@@ -103,7 +113,7 @@ export class AuthService {
   private generateAccessToken(userId: string) {
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('credential.bcrypt_salt_round'),
+      secret: this.configService.get<string>('credential.jwt_secret'),
       expiresIn: '1d',
     });
     return token;
