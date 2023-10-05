@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { BlogService } from './blog.service';
 import { Blog } from './schemas/blog.schema';
@@ -16,6 +16,7 @@ export class BlogController {
     }
 
     @Post()
+    @UsePipes(new ValidationPipe())
     async createNewBlog(@Body() blog: CreateBlogDto):Promise<Blog> {
         return await this.blogService.create(blog);
     }
