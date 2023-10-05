@@ -7,13 +7,8 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from 'src/User/user.service';
 import { AuthEmail, AuthGoogleLogin } from './dto/auth-login.dto';
-
-const client = new OAuth2Client(
-  process.env.GOOGLE_OAUTH_CLIENTID,
-  process.env.GOOGLE_OAUTH_CLIENTSECRET,
-);
-
-const bcrypt = require('bcrypt');
+import { ConfigService } from '@nestjs/config';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +17,7 @@ export class AuthService {
     private readonly userModel: Model<User>,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async registWithEmailPassword({ email, password, name }: AuthEmail) {
@@ -30,7 +26,9 @@ export class AuthService {
     if (!user) {
       let hashedPassword;
       try {
-        const saltRounds = 10; //can keep in .env
+        const saltRounds = this.configService.get<number>(
+          'credential.bcrypt_salt_round',
+        );
         hashedPassword = bcrypt.hashSync(password, saltRounds);
       } catch (err) {
         return {
@@ -70,9 +68,15 @@ export class AuthService {
   }
 
   async authenticateWithGoogleOAuth({ credential }: AuthGoogleLogin) {
+    const client = new OAuth2Client(
+      this.configService.get<string>('oauth.id'),
+      this.configService.get<string>('oauth.secret'),
+    );
+    console.log(this.configService.get<string>('oauth.id'));
+    console.log(this.configService.get<string>('oauth.secret'));
     const ticket = await client.verifyIdToken({
       idToken: credential,
-      audience: process.env.GOOGLE_OAUTH_CLIENTID,
+      audience: this.configService.get('oauth.id'),
     });
 
     const { email, name, family_name, picture } = ticket.getPayload();
@@ -99,7 +103,7 @@ export class AuthService {
   private generateAccessToken(userId: string) {
     const payload: TokenPayload = { userId };
     const token = this.jwtService.sign(payload, {
-      secret: 'some-secret', //can keep in .env
+      secret: this.configService.get<string>('credential.bcrypt_salt_round'),
       expiresIn: '1d',
     });
     return token;

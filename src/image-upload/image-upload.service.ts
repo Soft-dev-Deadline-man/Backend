@@ -4,37 +4,36 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class ImageUploadService {
-    constructor(private minioClientService: MinioClientService) {}
+  constructor(private minioClientService: MinioClientService) {}
 
-    async uploadImage(file: BufferedFile) {
-        try{
-            const uploaded_image = await this.minioClientService.upload(file);
-    
-            return {
-                image_url: uploaded_image.url,
-                message: 'Image uploaded successfully'
-            };
-        }
-        catch(err){
-            return {
-                message: "Image uploaded failed"
-            }
-        }
-    }
+  async uploadImage(image: BufferedFile) {
+    try {
+      const uploaded_image = await this.minioClientService.upload(image);
 
-    async uploadMultipleImages(images: BufferedFile[]){
-        try{
-            const uploadImages = await this.minioClientService.uploadMultiple(images);
-    
-            return {
-                images_url: uploadImages,
-                message: "Images uploaded successfully"
-            }
-        }
-        catch(err){
-            return {
-                message: "Images uploaded failed"
-            }
-        }
+      return {
+        image_url: uploaded_image.url,
+        message: 'Image uploaded successfully',
+      };
+    } catch (err) {
+      console.log(err);
+      return {
+        message: 'Image uploaded failed',
+      };
     }
+  }
+
+  async uploadMultipleImages(images: BufferedFile[]) {
+    try {
+      const uploadImages = await this.minioClientService.uploadMultiple(images);
+
+      return {
+        images_url: uploadImages,
+        message: 'Images uploaded successfully',
+      };
+    } catch (err) {
+      return {
+        message: 'Images uploaded failed',
+      };
+    }
+  }
 }
