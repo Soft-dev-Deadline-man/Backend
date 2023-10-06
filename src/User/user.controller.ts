@@ -1,4 +1,4 @@
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/user.schema';
@@ -11,17 +11,27 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { CurrentUser } from './common/decorator/user.decorator';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('users')
 @Controller('users')
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
   async getAllUsers(): Promise<User[]> {
     return await this.userService.findAll();
+  }
+
+  @Get('user/me')
+  @ApiBearerAuth()
+  async getMe(@CurrentUser() user: User) {
+    return await this.userService.findByEmail(user.email);
   }
 
   @Post()
