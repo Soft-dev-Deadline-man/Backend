@@ -2,7 +2,7 @@
 
 FROM node:18-alpine As development
 
-RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh - | node - add --global pnpm
+RUN npm install -g pnpm
 
 WORKDIR /usr/src/app
 
@@ -19,7 +19,7 @@ USER node
 
 FROM node:18-alpine As build
 
-RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh - | node - add --global pnpm
+RUN npm install -g pnpm
 
 WORKDIR /usr/src/app
 
