@@ -31,18 +31,18 @@ export class UserService {
     return user;
   }
 
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<User | null> {
     const user = (await this.userModel
       .findOne({ email: email })
       .exec()) as User;
     if (!user) {
-      throw new NotFoundException('User not found');
+      return null;
     }
 
     return user;
   }
 
-  async findByEmailReturnId(email: string) {
+  async findByEmailReturnId(email: string): Promise<string | null> {
     const user = await this.userModel.findOne({ email: email }).exec();
     if (!user) {
       return null;

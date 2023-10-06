@@ -23,7 +23,6 @@ export class AuthService {
   async registWithEmailPassword({ email, password, name }: RegistEmail) {
     try {
       const user = await this.userService.findByEmail(email);
-
       if (!user) {
         const saltRounds = this.configService.get<number>(
           'credential.bcrypt_salt_round',
@@ -59,15 +58,20 @@ export class AuthService {
       return {
         error: 'User not found',
       };
-      // throw new NotFoundException('user not found');
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) {
       const userId = await this.userService.findByEmailReturnId(user.email);
-      return {
-        accessToken: this.generateAccessToken(userId),
-      };
+      if (userId) {
+        return {
+          accessToken: this.generateAccessToken(userId),
+        };
+      } else {
+        return {
+          error: 'User not found',
+        };
+      }
     } else {
       return {
         error: 'Wrong password',
@@ -105,10 +109,15 @@ export class AuthService {
     }
 
     const userId = await this.userService.findByEmailReturnId(user.email);
-
-    return {
-      accessToken: this.generateAccessToken(userId),
-    };
+    if (userId) {
+      return {
+        accessToken: this.generateAccessToken(userId),
+      };
+    } else {
+      return {
+        error: 'User not found',
+      };
+    }
   }
 
   private generateAccessToken(userId: string) {

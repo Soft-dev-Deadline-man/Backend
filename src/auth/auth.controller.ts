@@ -31,7 +31,6 @@ export class AuthController {
       };
     }
   }
-
   @Post('login-email')
   async loginWithEmailPassword(@Body() authEmail: AuthEmail) {
     try {

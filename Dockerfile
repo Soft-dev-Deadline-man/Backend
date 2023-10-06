@@ -2,8 +2,7 @@
 
 FROM node:18-alpine As development
 
-RUN apk add --no-cache curl
-RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
+RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh - | node - add --global pnpm
 
 WORKDIR /usr/src/app
 
@@ -20,8 +19,7 @@ USER node
 
 FROM node:18-alpine As build
 
-RUN apk add --no-cache curl
-RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
+RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh - | node - add --global pnpm
 
 WORKDIR /usr/src/app
 
