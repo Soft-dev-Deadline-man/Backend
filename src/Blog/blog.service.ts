@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Blog } from './schemas/blog.schema';
 import mongoose from 'mongoose';
 import { BlogSummaryDto } from './dto/get-blog.dto';
+import { CreateBlogDto } from './dto/create-blog.dto';
 
 @Injectable()
 export class BlogService {
@@ -25,7 +26,7 @@ export class BlogService {
     return blogSummaries;
   }
 
-  async create(blog: Blog): Promise<Blog> {
+  async create(blog: CreateBlogDto): Promise<CreateBlogDto> {
     const createdBlog = await this.blogModel.create(blog);
     return createdBlog;
   }

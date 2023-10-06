@@ -30,6 +30,7 @@
     "@nestjs/swagger": "^7.1.13",
     "@types/bcrypt": "^5.0.0",
     "bcrypt": "^5.1.1",
+    "class-transformer": "^0.5.1",
     "buffer-image-size": "^0.6.4",
     "class-validator": "^0.14.0",
     "google-auth-library": "^9.1.0",
