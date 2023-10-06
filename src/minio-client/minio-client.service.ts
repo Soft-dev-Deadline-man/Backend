@@ -45,7 +45,6 @@ export class MinioClientService {
       ],
     };
     this.client.setBucketPolicy(
-      // process.env.MINIO_BUCKET_NAME,
       this.configService.get<string>('minio.bucket'),
       JSON.stringify(policy),
       function (err) {
@@ -57,7 +56,9 @@ export class MinioClientService {
   }
 
   private readonly logger: Logger;
-  private readonly bucketName = this.configService.get<string>('minio.bucket');
+  private readonly bucketName = this.configService.get<string>(
+    'minio.bucket',
+  ) as string;
 
   public get client() {
     return this.minio.client;
@@ -106,7 +107,7 @@ export class MinioClientService {
       fileName,
       file.buffer,
       metadata,
-      (err, etag) => {
+      (err) => {
         if (err) {
           this.logger.error(err);
           throw new HttpException(
@@ -128,14 +129,13 @@ export class MinioClientService {
 
   public async uploadMultiple(
     files: BufferedFile[],
-    bucketName: string = this.bucketName,
+    bucketName: string = this.bucketName as string,
   ) {
-    const urls = [];
+    const urls: { url: string }[] = [];
     for (const file of files) {
       urls.push(await this.upload(file, bucketName));
     }
 
-    // Return array of urls
     return urls;
   }
 

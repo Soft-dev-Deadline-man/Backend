@@ -22,10 +22,10 @@ export class ReviewController {
   ) {}
 
   @Get()
-  async getAllReviews(): Promise<any> {
+  async getAllReviews(): Promise<Promise<ReturnReviewDto>[]> {
     const reviews = await this.reviewService.findAll();
 
-    const returnReviewDtos = reviews.map(async (review) => {
+    return reviews.map(async (review) => {
       const returnReviewDto = new ReturnReviewDto();
       const user = await this.userService.findById(review.authorId);
 
@@ -44,8 +44,6 @@ export class ReviewController {
 
       return returnReviewDto;
     });
-
-    return returnReviewDtos;
   }
 
   @Post()

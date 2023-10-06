@@ -15,20 +15,17 @@ export class BlogService {
   async findAll(): Promise<BlogSummaryDto[]> {
     const blogs = await this.blogModel.find().exec();
 
-    const blogSummaries = blogs.map((blog) => ({
+    return blogs.map((blog) => ({
       _id: blog._id,
       title: blog.title,
       category: blog.category,
       entrancePrice: blog.entrancePrice,
       contact: blog.contact,
     }));
-
-    return blogSummaries;
   }
 
   async create(blog: CreateBlogDto): Promise<CreateBlogDto> {
-    const createdBlog = await this.blogModel.create(blog);
-    return createdBlog;
+    return await this.blogModel.create(blog);
   }
 
   async findById(id: string): Promise<Blog> {
@@ -42,15 +39,15 @@ export class BlogService {
   }
 
   async updateById(id: string, blog: Blog): Promise<Blog> {
-    return await this.blogModel
+    return (await this.blogModel
       .findByIdAndUpdate(id, blog, {
         new: true,
         runValidators: true,
       })
-      .exec();
+      .exec()) as Blog;
   }
 
   async deleteById(id: string): Promise<Blog> {
-    return await this.blogModel.findByIdAndDelete(id).exec();
+    return (await this.blogModel.findByIdAndDelete(id).exec()) as Blog;
   }
 }

@@ -24,7 +24,7 @@ export class Review {
   rating: number;
 
   @Prop()
-  score: number; //vote-up, vote-down
+  score: number; // vote-up, vote-down
 
   @Prop()
   images: string[];

@@ -28,7 +28,7 @@ export class AuthService {
         const saltRounds = this.configService.get<number>(
           'credential.bcrypt_salt_round',
         );
-        const hashedPassword = bcrypt.hashSync(password, saltRounds);
+        const hashedPassword = bcrypt.hashSync(password, saltRounds as number);
 
         const newUser = new this.userModel({
           email: email,
@@ -85,7 +85,12 @@ export class AuthService {
       audience: this.configService.get('oauth.id'),
     });
 
-    const { email, name, family_name, picture } = ticket.getPayload();
+    const {
+      email = '',
+      name = '',
+      family_name = '',
+      picture = '',
+    } = ticket.getPayload() || {};
     const user = await this.userService.findByEmail(email);
     if (!user) {
       const newUser = new this.userModel({
@@ -108,10 +113,9 @@ export class AuthService {
 
   private generateAccessToken(userId: string) {
     const payload: TokenPayload = { userId };
-    const token = this.jwtService.sign(payload, {
+    return this.jwtService.sign(payload, {
       secret: this.configService.get<string>('credential.jwt_secret'),
       expiresIn: '1d',
     });
-    return token;
   }
 }

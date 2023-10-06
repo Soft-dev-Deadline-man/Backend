@@ -1,6 +1,9 @@
 export class ReturnReviewDto {
   blogId: string;
-  author: any;
+  author: {
+    name: string;
+    profile: string;
+  };
   title: string;
   description: string;
   recommendActivity: string;

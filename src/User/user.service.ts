@@ -14,13 +14,11 @@ export class UserService {
   ) {}
 
   async findAll(): Promise<User[]> {
-    const users = await this.userModel.find().exec();
-    return users;
+    return await this.userModel.find().exec();
   }
 
   async create(user: User): Promise<User> {
-    const createdUser = await this.userModel.create(user);
-    return createdUser;
+    return await this.userModel.create(user);
   }
 
   async findById(id: string): Promise<User> {
@@ -34,7 +32,9 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User> {
-    const user = this.userModel.findOne({ email: email });
+    const user = (await this.userModel
+      .findOne({ email: email })
+      .exec()) as User;
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -43,11 +43,11 @@ export class UserService {
   }
 
   async findByEmailReturnId(email: string) {
-    const user = this.userModel.findOne({ email: email });
+    const user = await this.userModel.findOne({ email: email }).exec();
     if (!user) {
       return null;
     }
-    return (await user).id;
+    return user.id;
   }
 
   async findByIdAndChangePassword(id: string, password: string) {
@@ -56,12 +56,12 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
 
-    let hashedPassword;
+    let hashedPassword: string;
     try {
       const saltRounds = this.configService.get<number>(
         'credential.bcrypt_salt_round',
       );
-      hashedPassword = bcrypt.hashSync(password, saltRounds);
+      hashedPassword = bcrypt.hashSync(password, saltRounds as number);
     } catch (err) {
       return {
         error: err,
@@ -74,15 +74,15 @@ export class UserService {
   }
 
   async updateById(id: string, user: User): Promise<User> {
-    return await this.userModel
+    return (await this.userModel
       .findByIdAndUpdate(id, user, {
         new: true,
         runValidators: true,
       })
-      .exec();
+      .exec()) as User;
   }
 
   async deleteById(id: string): Promise<User> {
-    return await this.userModel.findByIdAndDelete(id).exec();
+    return (await this.userModel.findByIdAndDelete(id).exec()) as User;
   }
 }
