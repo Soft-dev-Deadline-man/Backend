@@ -55,9 +55,6 @@ export class Contact {
 
   @Prop()
   facebook: string;
-
-  @Prop()
-  ig: string;
 }
 
 @Schema({
