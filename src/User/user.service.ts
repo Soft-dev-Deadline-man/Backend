@@ -13,8 +13,15 @@ export class UserService {
     private readonly configService: ConfigService,
   ) {}
 
-  async findAll(): Promise<User[]> {
-    return await this.userModel.find().exec();
+  async findAll(): Promise<unknown[]> {
+    const users = await this.userModel.find().exec();
+    return users.map((user) => ({
+      profile: user.profile,
+      name: user.name,
+      bio: user.bio,
+      bookmark: user.bookmark,
+      postedBlogs: user.postedBlogs,
+    }));
   }
 
   async create(user: User): Promise<User> {
