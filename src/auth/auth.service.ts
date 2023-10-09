@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client } from 'google-auth-library';
 import { TokenPayload } from './interface/tokenPayload.interface';
@@ -38,26 +38,39 @@ export class AuthService {
         newUser.save();
 
         return {
-          accessToken: this.generateAccessToken(newUser.id),
+          status: HttpStatus.OK,
+          message: 'User already registed.',
         };
       } else {
-        return {
-          error: 'User with this email already exists',
-        };
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            error: 'User with this email already exists.',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
       }
     } catch (error) {
-      return {
-        error: 'Registration failed',
-      };
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Registation fail.',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
   async loginWithEmailPassword({ email, password }: AuthEmail) {
     const user = await this.userService.findByEmail(email);
     if (!user) {
-      return {
-        error: 'User not found',
-      };
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'User not found',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -68,14 +81,22 @@ export class AuthService {
           accessToken: this.generateAccessToken(userId),
         };
       } else {
-        return {
-          error: 'User not found',
-        };
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            error: 'User not found',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
       }
     } else {
-      return {
-        error: 'Wrong password',
-      };
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'Wrong Password',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -114,9 +135,13 @@ export class AuthService {
         accessToken: this.generateAccessToken(userId),
       };
     } else {
-      return {
-        error: 'User not found',
-      };
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          error: 'User not found',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
