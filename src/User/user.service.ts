@@ -14,7 +14,7 @@ export class UserService {
   ) {}
 
   async findAll(): Promise<unknown[]> {
-    const users = await this.userModel.find().exec();
+    const users = await this.userModel.find();
     return users.map((user) => ({
       profile: user.profile,
       name: user.name,

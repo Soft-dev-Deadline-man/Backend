@@ -15,6 +15,7 @@ export class ImageUploadService {
         message: 'Image uploaded successfully',
       };
     } catch (err) {
+      // console.log('Error', err);
       return {
         message: 'Image uploaded failed',
       };

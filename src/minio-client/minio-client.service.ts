@@ -47,7 +47,7 @@ export class MinioClientService {
     this.client.setBucketPolicy(
       this.configService.get<string>('minio.bucket'),
       JSON.stringify(policy),
-      function (err) {
+      function (err: unknown) {
         if (err) throw err;
 
         console.log('Bucket policy set');

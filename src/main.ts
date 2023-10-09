@@ -13,6 +13,7 @@ async function bootstrap() {
     .setDescription('SwaggerUI in NestJS')
     .setVersion('1.0')
     .addTag('DeadlineMan')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
