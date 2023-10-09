@@ -19,7 +19,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('users')
 @Controller('users')
-@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -29,6 +28,7 @@ export class UserController {
   }
 
   @Get('user/me')
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async getMe(@CurrentUser() user: User) {
     return await this.userService.findByEmail(user.email);
