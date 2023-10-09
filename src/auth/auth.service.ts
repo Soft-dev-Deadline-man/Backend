@@ -38,14 +38,12 @@ export class AuthService {
         newUser.save();
 
         return {
-          status: HttpStatus.OK,
-          message: 'User already registed.',
+          message: "User's registed successful.",
         };
       } else {
         throw new HttpException(
           {
-            status: HttpStatus.BAD_REQUEST,
-            error: 'User with this email already exists.',
+            message: 'User with this email already exists.',
           },
           HttpStatus.BAD_REQUEST,
         );
@@ -53,8 +51,7 @@ export class AuthService {
     } catch (error) {
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Registation fail.',
+          message: 'Registation fail.',
         },
         HttpStatus.BAD_REQUEST,
       );
@@ -66,8 +63,7 @@ export class AuthService {
     if (!user) {
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'User not found',
+          message: 'User not found',
         },
         HttpStatus.BAD_REQUEST,
       );
@@ -83,8 +79,7 @@ export class AuthService {
       } else {
         throw new HttpException(
           {
-            status: HttpStatus.BAD_REQUEST,
-            error: 'User not found',
+            message: 'User not found',
           },
           HttpStatus.BAD_REQUEST,
         );
@@ -92,8 +87,7 @@ export class AuthService {
     } else {
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'Wrong Password',
+          message: 'Wrong Password',
         },
         HttpStatus.BAD_REQUEST,
       );
@@ -137,8 +131,7 @@ export class AuthService {
     } else {
       throw new HttpException(
         {
-          status: HttpStatus.BAD_REQUEST,
-          error: 'User not found',
+          message: 'User not found',
         },
         HttpStatus.BAD_REQUEST,
       );

@@ -1,4 +1,4 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ timestamps: true })
 export class Review {
@@ -29,3 +29,5 @@ export class Review {
   @Prop()
   images: string[];
 }
+
+export const ReviewSchema = SchemaFactory.createForClass(Review);
