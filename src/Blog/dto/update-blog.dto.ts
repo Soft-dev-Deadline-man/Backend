@@ -1,4 +1,12 @@
-import { Category, Contact, EntrancePrice, Forbidden, OpenTime, SeparateRating } from '../schemas/blog.schema';
+import { Review } from 'src/review/schemas/review.schema';
+import {
+  Category,
+  Contact,
+  EntrancePrice,
+  Forbidden,
+  OpenTime,
+  SeparateRating,
+} from '../schemas/blog.schema';
 
 export class UpdateBlogDto {
   readonly title: string;
@@ -10,7 +18,7 @@ export class UpdateBlogDto {
   readonly rating: number;
   readonly separateRating: SeparateRating[];
 
-  readonly reviews: any;
+  readonly reviews: Review[];
   readonly latitude: string;
   readonly longitude: string;
 

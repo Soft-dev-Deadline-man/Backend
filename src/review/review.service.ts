@@ -11,25 +11,23 @@ export class ReviewService {
   ) {}
 
   async findAll(): Promise<Review[]> {
-    const reviews = await this.reviewModel.find().exec();
-    return reviews;
+    return await this.reviewModel.find().exec();
   }
 
   async create(review: Review): Promise<Review> {
-    const createedReview = await this.reviewModel.create(review);
-    return createedReview;
+    return await this.reviewModel.create(review);
   }
 
   async updateById(id: string, review: Review): Promise<Review> {
-    return await this.reviewModel
+    return (await this.reviewModel
       .findByIdAndUpdate(id, review, {
         new: true,
         runValidators: true,
       })
-      .exec();
+      .exec()) as Review;
   }
 
   async deleteById(id: string): Promise<Review> {
-    return await this.reviewModel.findByIdAndDelete(id).exec();
+    return (await this.reviewModel.findByIdAndDelete(id).exec()) as Review;
   }
 }

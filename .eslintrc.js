@@ -9,7 +9,7 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
-    'prettier'
+    'prettier',
   ],
   root: true,
   env: {
@@ -21,14 +21,11 @@ module.exports = {
     '@typescript-eslint/interface-name-prefix': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
-    // 'prettier/prettier': 0,
-
-    "prettier/prettier": [
-      "error",
+    'prettier/prettier': [
+      'error',
       {
-        endOfLine: 0,
-      }
-    ]
+        endOfLine: 'crlf',
+      },
+    ],
   },
 };

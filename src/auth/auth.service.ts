@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { OAuth2Client } from 'google-auth-library';
 import { TokenPayload } from './interface/tokenPayload.interface';
@@ -6,14 +6,9 @@ import { User } from '../User/schemas/user.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from 'src/User/user.service';
-import { AuthEmail, AuthGoogleLogin } from './dto/auth-login.dto';
-
-const client = new OAuth2Client(
-  process.env.GOOGLE_OAUTH_CLIENTID,
-  process.env.GOOGLE_OAUTH_CLIENTSECRET,
-);
-
-const bcrypt = require('bcrypt');
+import { AuthEmail, AuthGoogleLogin, RegistEmail } from './dto/auth-login.dto';
+import { ConfigService } from '@nestjs/config';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -22,60 +17,99 @@ export class AuthService {
     private readonly userModel: Model<User>,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
-  async registWithEmailPassword({ email, password, name }: AuthEmail) {
-    const user = await this.userService.findByEmail(email);
+  async registWithEmailPassword({ email, password, name }: RegistEmail) {
+    try {
+      const user = await this.userService.findByEmail(email);
+      if (!user) {
+        const saltRounds = this.configService.get<number>(
+          'credential.bcrypt_salt_round',
+        );
+        const hashedPassword = bcrypt.hashSync(password, saltRounds as number);
 
-    if (!user) {
-      let hashedPassword;
-      try {
-        const saltRounds = 10; //can keep in .env
-        hashedPassword = bcrypt.hashSync(password, saltRounds);
-      } catch (err) {
+        const newUser = new this.userModel({
+          email: email,
+          password: hashedPassword,
+          name: name,
+        });
+
+        newUser.save();
+
         return {
-          error: err,
+          message: "User's registed successful.",
         };
+      } else {
+        throw new HttpException(
+          {
+            message: 'User with this email already exists.',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
       }
-      const newUser = new this.userModel({
-        email: email,
-        password: hashedPassword,
-        name: name,
-      });
-      await newUser.save();
-
-      return {
-        accessToken: this.generateAccessToken(newUser.id),
-      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          message: 'Registation fail.',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
   async loginWithEmailPassword({ email, password }: AuthEmail) {
     const user = await this.userService.findByEmail(email);
     if (!user) {
-      throw new NotFoundException('user not found');
+      throw new HttpException(
+        {
+          message: 'User not found',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) {
       const userId = await this.userService.findByEmailReturnId(user.email);
-      return {
-        accessToken: this.generateAccessToken(userId),
-      };
+      if (userId) {
+        return {
+          accessToken: this.generateAccessToken(userId),
+        };
+      } else {
+        throw new HttpException(
+          {
+            message: 'User not found',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
     } else {
-      return {
-        error: 'wrong password',
-      };
+      throw new HttpException(
+        {
+          message: 'Wrong Password',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
   async authenticateWithGoogleOAuth({ credential }: AuthGoogleLogin) {
+    const client = new OAuth2Client(
+      this.configService.get<string>('oauth.id'),
+      this.configService.get<string>('oauth.secret'),
+    );
     const ticket = await client.verifyIdToken({
       idToken: credential,
-      audience: process.env.GOOGLE_OAUTH_CLIENTID,
+      audience: this.configService.get('oauth.id'),
     });
 
-    const { email, name, family_name, picture } = ticket.getPayload();
+    const {
+      email = '',
+      name = '',
+      family_name = '',
+      picture = '',
+    } = ticket.getPayload() || {};
     const user = await this.userService.findByEmail(email);
     if (!user) {
       const newUser = new this.userModel({
@@ -90,18 +124,25 @@ export class AuthService {
     }
 
     const userId = await this.userService.findByEmailReturnId(user.email);
-
-    return {
-      accessToken: this.generateAccessToken(userId),
-    };
+    if (userId) {
+      return {
+        accessToken: this.generateAccessToken(userId),
+      };
+    } else {
+      throw new HttpException(
+        {
+          message: 'User not found',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 
   private generateAccessToken(userId: string) {
     const payload: TokenPayload = { userId };
-    const token = this.jwtService.sign(payload, {
-      secret: 'some-secret', //can keep in .env
+    return this.jwtService.sign(payload, {
+      secret: this.configService.get<string>('credential.jwt_secret'),
       expiresIn: '1d',
     });
-    return token;
   }
 }

@@ -8,8 +8,12 @@ import { UserModule } from 'src/User/user.module';
 import { ReviewModule } from 'src/review/review.module';
 
 @Module({
-  imports: [ UserModule, ReviewModule, MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]) ],
+  imports: [
+    UserModule,
+    ReviewModule,
+    MongooseModule.forFeature([{ name: Blog.name, schema: BlogSchema }]),
+  ],
   providers: [Blog, BlogService],
-  controllers: [BlogController]
+  controllers: [BlogController],
 })
 export class BlogModule {}

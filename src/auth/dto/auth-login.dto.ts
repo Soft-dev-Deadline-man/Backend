@@ -4,7 +4,7 @@ export class AuthGoogleLogin {
   readonly credential: string;
 }
 
-export class AuthEmail {
+export class RegistEmail {
   @IsString()
   @ApiProperty()
   @IsNotEmpty()
@@ -14,6 +14,18 @@ export class AuthEmail {
   @ApiProperty()
   @IsNotEmpty()
   name: string;
+
+  @IsString()
+  @ApiProperty()
+  @IsNotEmpty()
+  password: string;
+}
+
+export class AuthEmail {
+  @IsString()
+  @ApiProperty()
+  @IsNotEmpty()
+  email: string;
 
   @IsString()
   @ApiProperty()

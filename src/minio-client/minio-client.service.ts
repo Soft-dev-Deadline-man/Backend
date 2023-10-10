@@ -1,12 +1,16 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { MinioService } from 'nestjs-minio-client';
 import { BufferedFile } from './file.model';
-import * as crypto from 'crypto';
 import { ConfigService } from '@nestjs/config';
+import * as crypto from 'crypto';
+import * as sizeOf from 'buffer-image-size';
 
 @Injectable()
 export class MinioClientService {
-  constructor(private readonly minio: MinioService) {
+  constructor(
+    private readonly minio: MinioService,
+    private readonly configService: ConfigService,
+  ) {
     this.logger = new Logger(MinioClientService.name);
 
     const policy = {
@@ -41,9 +45,9 @@ export class MinioClientService {
       ],
     };
     this.client.setBucketPolicy(
-      process.env.MINIO_BUCKET_NAME,
+      this.configService.get<string>('minio.bucket'),
       JSON.stringify(policy),
-      function (err) {
+      function (err: unknown) {
         if (err) throw err;
 
         console.log('Bucket policy set');
@@ -52,7 +56,9 @@ export class MinioClientService {
   }
 
   private readonly logger: Logger;
-  private readonly bucketName = process.env.MINIO_BUCKET_NAME;
+  private readonly bucketName = this.configService.get<string>(
+    'minio.bucket',
+  ) as string;
 
   public get client() {
     return this.minio.client;
@@ -76,7 +82,7 @@ export class MinioClientService {
     }
 
     // Image Width and Height must be more than 400px
-    const dimensions = sizeOf(file.buffer);
+    const dimensions = sizeOf(file.buffer as Buffer);
     if (dimensions.width < 400 || dimensions.height < 400) {
       throw new HttpException(
         'Image dimensions too small',
@@ -101,7 +107,7 @@ export class MinioClientService {
       fileName,
       file.buffer,
       metadata,
-      (err, etag) => {
+      (err) => {
         if (err) {
           this.logger.error(err);
           throw new HttpException(
@@ -113,20 +119,23 @@ export class MinioClientService {
     );
 
     return {
-      url: `${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/${process.env.MINIO_BUCKET_NAME}/${fileName}`,
+      url: `${this.configService.get<string>(
+        'minio.endpoint',
+      )}:${this.configService.get<number>(
+        'minio.port',
+      )}/${this.configService.get<string>('minio.bucket')}/${fileName}`,
     };
   }
 
   public async uploadMultiple(
     files: BufferedFile[],
-    bucketName: string = this.bucketName,
+    bucketName: string = this.bucketName as string,
   ) {
-    let urls = [];
-    for (let file of files) {
+    const urls: { url: string }[] = [];
+    for (const file of files) {
       urls.push(await this.upload(file, bucketName));
     }
 
-    // Return array of urls
     return urls;
   }
 
@@ -137,18 +146,4 @@ export class MinioClientService {
       }
     });
   }
-}
-
-function sizeOf(buffer: string | Buffer) {
-  // git image size without using any npm package
-  const head = buffer.toString('hex', 0, 4);
-  const type = head.substring(0, 2);
-  const width = head.substring(2, 4);
-  const height = head.substring(4, 6);
-
-  return {
-    type: type,
-    width: parseInt(width, 16),
-    height: parseInt(height, 16),
-  };
 }

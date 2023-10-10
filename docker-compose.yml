@@ -9,8 +9,6 @@ services:
     depends_on:
       - mongo
       - minio
-    ports:
-      - '${APP_PORT}:${APP_PORT}'
     environment:
       - APP_PORT
       - MONGO_URI
@@ -20,12 +18,18 @@ services:
       - MINIO_SECRET_KEY
       - MINIO_USE_SSL
       - MINIO_BUCKET_NAME
+      - GOOGLE_CLIENT_ID
+      - GOOGLE_CLIENT_SECRET
+      - JWT_SECRET
+      - BCRYPT_SALT_ROUND
+    ports:
+      - '${APP_PORT}:${APP_PORT}'
     networks:
       - network-frontend
       - network-backend
 
   mongo:
-    image: mongo:4.4.24
+    image: mongo
     container_name: mongo
     restart: unless-stopped
     volumes:
@@ -51,6 +55,7 @@ services:
       - MINIO_ROOT_USER
       - MINIO_ROOT_PASSWORD
     networks:
+      - network-frontend
       - network-backend
     command: server /data --console-address ":9090"
 

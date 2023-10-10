@@ -13,7 +13,9 @@ import { Review } from './schemas/review.schema';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ReturnReviewDto } from './dto/return-review.dto';
 import { UserService } from 'src/User/user.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('reviews')
 @Controller('review')
 export class ReviewController {
   constructor(
@@ -22,10 +24,10 @@ export class ReviewController {
   ) {}
 
   @Get()
-  async getAllReviews(): Promise<any> {
+  async getAllReviews(): Promise<Promise<ReturnReviewDto>[]> {
     const reviews = await this.reviewService.findAll();
 
-    const returnReviewDtos = reviews.map(async (review) => {
+    return reviews.map(async (review) => {
       const returnReviewDto = new ReturnReviewDto();
       const user = await this.userService.findById(review.authorId);
 
@@ -44,8 +46,6 @@ export class ReviewController {
 
       return returnReviewDto;
     });
-
-    return returnReviewDtos;
   }
 
   @Post()
