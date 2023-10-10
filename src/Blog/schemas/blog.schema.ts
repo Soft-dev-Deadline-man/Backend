@@ -8,20 +8,6 @@ export enum Category {
   ENTERTAIN = 'สวนสัตว์ สวนน้ำ และสวนสนุก',
   MEUSEUM = 'พิพิธภัณฑ์ และแหล่งเรียนรู้ทางธรรมชาติ',
 }
-
-export enum Days {
-  MONDAY = 'จันทร์',
-  TUESDAY = 'อังคาร',
-  WEDNESDAY = 'พุธ',
-  THURSDAY = 'พฤหัสบดี',
-  FRIDAY = 'ศุกร์',
-  SATURDAY = 'เสาร์',
-  SUNDAY = 'อาทิตย์',
-  EVERYDAY = 'ทุกวัน',
-  WORKDAY = 'วันจันทร์ - ศุกร์',
-  DAYOFF = 'เสาร์ - อาทิตย์',
-}
-
 export class Forbidden {
   @Prop()
   animal: boolean;
@@ -69,9 +55,6 @@ export class Contact {
 
   @Prop()
   facebook: string;
-
-  @Prop()
-  ig: string;
 }
 
 @Schema({
