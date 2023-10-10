@@ -38,6 +38,8 @@ export class UserController {
   }
 
   @Post('upload/image')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async changeUserProfile(
     @CurrentUser() user: User,
     @Body() image: ChangeUserProfileDto,
