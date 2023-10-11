@@ -49,12 +49,29 @@ export class UserService {
     return user;
   }
 
-  async findByEmailReturnId(email: string): Promise<string | null> {
+  async findByEmailReturnId(email: string): Promise<string> {
     const user = await this.userModel.findOne({ email: email }).exec();
     if (!user) {
-      return null;
+      throw new NotFoundException('User not found');
     }
     return user.id;
+  }
+
+  async changeUserProfile(id: string, image: string) {
+    const user = this.userModel.findById(id).exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return await this.userModel.findByIdAndUpdate(
+      id,
+      {
+        ...user,
+        profile: image,
+      },
+      {
+        new: true,
+      },
+    );
   }
 
   async findByIdAndChangePassword(id: string, password: string) {

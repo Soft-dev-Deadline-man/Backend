@@ -17,6 +17,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from './common/decorator/user.decorator';
 import { AuthGuard } from '@nestjs/passport';
+import { ChangeUserProfileDto } from './dto/update-user-profile.dto';
 
 @ApiTags('users')
 @Controller('users')
@@ -34,6 +35,17 @@ export class UserController {
   @ApiBearerAuth()
   async getMe(@CurrentUser() user: User) {
     return await this.userService.findByEmail(user.email);
+  }
+
+  @Post('upload/image')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async changeUserProfile(
+    @CurrentUser() user: User,
+    @Body() image: ChangeUserProfileDto,
+  ): Promise<unknown> {
+    const id = await this.userService.findByEmailReturnId(user.email);
+    return await this.userService.changeUserProfile(id, image.image);
   }
 
   @Post()
