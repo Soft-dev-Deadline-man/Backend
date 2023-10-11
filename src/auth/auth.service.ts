@@ -63,7 +63,7 @@ export class AuthService {
     if (!user) {
       throw new HttpException(
         {
-          message: 'User not found',
+          message: 'User or Password incorrect.',
         },
         HttpStatus.BAD_REQUEST,
       );
@@ -79,7 +79,7 @@ export class AuthService {
       } else {
         throw new HttpException(
           {
-            message: 'User not found',
+            message: 'User or Password incorrect.',
           },
           HttpStatus.BAD_REQUEST,
         );
@@ -87,7 +87,7 @@ export class AuthService {
     } else {
       throw new HttpException(
         {
-          message: 'Wrong Password',
+          message: 'User or Password incorrect.',
         },
         HttpStatus.BAD_REQUEST,
       );

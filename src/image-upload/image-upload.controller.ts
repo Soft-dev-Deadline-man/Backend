@@ -1,9 +1,7 @@
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-} from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { ImageUploadService } from './image-upload.service';
 import {
+  Body,
   Controller,
   Post,
   UploadedFile,
@@ -22,14 +20,12 @@ export class ImageUploadController {
     return await this.imageUploadService.uploadImage(image);
   }
 
-  @Post('multiple_images')
-  @UseInterceptors(
-    FileFieldsInterceptor([
-      { name: 'image1', maxCount: 1 },
-      { name: 'image2', maxCount: 1 },
-    ]),
-  )
-  async uploadMultipleImages(@UploadedFiles() images: BufferedFile[]) {
-    return await this.imageUploadService.uploadMultipleImages(images);
+  @Post('multiple-upload')
+  @UseInterceptors(FilesInterceptor('images', 10))
+  async uploadMultipleImages(
+    @UploadedFiles() images: BufferedFile[],
+    @Body() reviewId: { reviewId: string },
+  ) {
+    return await this.imageUploadService.uploadMultipleImages(images, reviewId);
   }
 }
