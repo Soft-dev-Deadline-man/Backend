@@ -5,6 +5,6 @@ export class CreateReviewDto {
   readonly recommendActivity: string;
   readonly spendTime: string;
   readonly rating: number;
-  readonly score: number;
-  readonly images: string[];
+  // readonly score: number;
+  // readonly images: string[];
 }

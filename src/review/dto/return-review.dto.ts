@@ -9,4 +9,6 @@ export class ReturnReviewDto {
   recommendActivity: string;
   spendTime: string;
   rating: number;
+  score: number;
+  images: string[];
 }

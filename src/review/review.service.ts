@@ -44,8 +44,6 @@ export class ReviewService {
       recommendActivity: createReviewDto.recommendActivity,
       spendTime: createReviewDto.spendTime,
       rating: createReviewDto.rating,
-      score: createReviewDto.score,
-      images: createReviewDto.images,
     };
     return await this.reviewModel.create(review);
     // const token =

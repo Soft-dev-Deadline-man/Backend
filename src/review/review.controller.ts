@@ -45,6 +45,8 @@ export class ReviewController {
           name: user.name,
           profile: user.profile,
         };
+        returnReviewDto.score = review.score ? review.score : 0;
+        returnReviewDto.images = review.images ? review.images : [];
         return returnReviewDto;
       }),
     );
@@ -53,7 +55,6 @@ export class ReviewController {
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   async createReview(
     @Headers() header: Record<string, string>,
     @Body() createReviewDto: CreateReviewDto,
@@ -62,6 +63,8 @@ export class ReviewController {
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   async updateReview(
     @Param('id') id: string,
     @Body() review: UpdateReviewDto,
@@ -70,6 +73,8 @@ export class ReviewController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   async deleteReview(@Param('id') id: string): Promise<Review> {
     return await this.reviewService.deleteById(id);
   }
