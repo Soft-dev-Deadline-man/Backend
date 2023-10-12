@@ -37,4 +37,7 @@ export class CreateBlogDto {
   readonly forbidden: Forbidden;
   readonly contact: Contact;
   readonly images: string[];
+
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
 }

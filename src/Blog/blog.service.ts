@@ -36,7 +36,7 @@ export class BlogService {
     }));
   }
 
-  async create(blog: CreateBlogDto): Promise<CreateBlogDto> {
+  async create(blog: CreateBlogDto): Promise<Blog> {
     return await this.blogModel.create(blog);
   }
 
@@ -45,6 +45,46 @@ export class BlogService {
 
     if (!blog) {
       throw new NotFoundException('Blog not found');
+    }
+
+    return blog;
+  }
+
+  async updateImageById(
+    id: string,
+    images: string[] | undefined,
+  ): Promise<unknown> {
+    const blog = await this.blogModel.findById(id).exec();
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+
+    let isUpdated = false;
+    for (const inputImg in images) {
+      let isSaved = false;
+      for (const imageInDB in blog.images) {
+        if (inputImg == imageInDB) {
+          isSaved = true;
+          break;
+        }
+      }
+      if (!isSaved) {
+        isUpdated = true;
+        blog.images.push(inputImg);
+      }
+    }
+
+    if (isUpdated) {
+      return await this.blogModel.findByIdAndUpdate(
+        id,
+        {
+          ...blog,
+          images: blog.images,
+        },
+        {
+          new: true,
+        },
+      );
     }
 
     return blog;

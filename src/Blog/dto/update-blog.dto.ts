@@ -26,4 +26,7 @@ export class UpdateBlogDto {
   readonly forbidden: Forbidden;
   readonly contact: Contact;
   readonly images: string[];
+
+  readonly createdAt: Date;
+  readonly updatedAt: Date;
 }
