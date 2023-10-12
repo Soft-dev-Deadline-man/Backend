@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Blog } from './schemas/blog.schema';
 import mongoose from 'mongoose';
@@ -69,6 +73,60 @@ export class BlogService {
     );
 
     return blog;
+  }
+
+  async initBlogSeperateRatingById(
+    id: string,
+    score: number,
+  ): Promise<unknown> {
+    const blog = await this.blogModel.findById(id).exec();
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+
+    if (score < 1 || score > 5) {
+      throw new BadRequestException('Invalid score value');
+    }
+    const ratingProperty = `rate${score}`;
+    blog.separateRating[ratingProperty] += 1;
+
+    await this.blogModel.findByIdAndUpdate(
+      id,
+      {
+        ...blog,
+        seperateRating: blog.separateRating,
+      },
+      {
+        new: true,
+      },
+    );
+
+    return blog;
+  }
+
+  async updateBlogSeperateRatingById(
+    blogId: string,
+    userId: string,
+    newScore: number,
+  ): Promise<unknown> {
+    const blog = await this.blogModel.findById(blogId).exec();
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+    if (newScore < 1 || newScore > 5) {
+      throw new BadRequestException('Invalid score value');
+    }
+    const previousScore = blog.rating[userId];
+
+    if (previousScore !== undefined) {
+      const previousRatingProperty = `rate${previousScore}`;
+      blog.separateRating[previousRatingProperty] -= 1;
+    }
+    const newRatingProperty = `rate${newScore}`;
+    blog.separateRating[newRatingProperty] += 1;
+    blog.rating[userId] = newScore;
+    const updatedBlog = await blog.save();
+    return updatedBlog;
   }
 
   async updateImageById(
