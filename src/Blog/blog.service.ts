@@ -36,7 +36,7 @@ export class BlogService {
     }));
   }
 
-  async create(blog: CreateBlogDto): Promise<CreateBlogDto> {
+  async create(blog: CreateBlogDto): Promise<Blog> {
     return await this.blogModel.create(blog);
   }
 
