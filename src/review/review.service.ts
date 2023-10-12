@@ -48,7 +48,7 @@ export class ReviewService {
       rating: createReviewDto.rating,
     };
 
-    this.blogService.updateImageById(review.blogId,review.images);
+    this.blogService.updateImageById(review.blogId, review.images);
 
     return await this.reviewModel.create(review);
   }

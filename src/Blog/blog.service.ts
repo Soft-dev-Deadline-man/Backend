@@ -59,10 +59,10 @@ export class BlogService {
       throw new NotFoundException('Blog not found');
     }
 
-    var isUpdated = false;
-    for (var inputImg in images) {
-      var isSaved = false;
-      for (var imageInDB in blog.images) {
+    let isUpdated = false;
+    for (const inputImg in images) {
+      let isSaved = false;
+      for (const imageInDB in blog.images) {
         if (inputImg == imageInDB) {
           isSaved = true;
           break;
