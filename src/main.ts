@@ -11,7 +11,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('Deadline_Man API')
     .setDescription('SwaggerUI in NestJS')
-    .setVersion('1.0')
+    .setVersion('2.0')
     .addTag('DeadlineMan')
     .addBearerAuth()
     .build();

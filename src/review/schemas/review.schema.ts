@@ -24,10 +24,10 @@ export class Review {
   rating: number;
 
   @Prop()
-  score: number; // vote-up, vote-down
+  score?: number; // vote-up, vote-down
 
   @Prop()
-  images: string[];
+  images?: string[];
 }
 
 export const ReviewSchema = SchemaFactory.createForClass(Review);
