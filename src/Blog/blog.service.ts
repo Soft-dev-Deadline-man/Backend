@@ -13,7 +13,7 @@ export class BlogService {
   ) {}
 
   async findAll(): Promise<BlogSummaryDto[]> {
-    const blogs = await this.blogModel.find().exec();
+    const blogs = await this.blogModel.find().populate('reviews').exec();
     blogs.forEach((blog) => {
       if (blog.reviews === null) {
         blog.reviewLength = 0;

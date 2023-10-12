@@ -17,7 +17,7 @@ export class UpdateBlogDto {
   readonly address: string;
   readonly rating: number;
   readonly reviewLength: number;
-  readonly separateRating: SeparateRating[];
+  readonly separateRating: SeparateRating;
 
   readonly reviews: Review[];
   readonly latitude: string;

@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
 import { Review } from 'src/review/schemas/review.schema';
 
 export enum Category {
@@ -40,10 +41,19 @@ export class EntrancePrice {
 
 export class SeparateRating {
   @Prop()
-  star: number;
+  rate5: number;
 
   @Prop()
-  quantity: number;
+  rate4: number;
+
+  @Prop()
+  rate3: number;
+
+  @Prop()
+  rate2: number;
+
+  @Prop()
+  rate1: number;
 }
 
 export class Contact {
@@ -83,9 +93,9 @@ export class Blog {
   reviewLength: number;
 
   @Prop()
-  separateRating: SeparateRating[];
+  separateRating: SeparateRating;
 
-  @Prop()
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }] })
   reviews: Review[];
 
   @Prop()
