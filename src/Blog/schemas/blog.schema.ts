@@ -80,6 +80,9 @@ export class Blog {
   rating: number;
 
   @Prop()
+  reviewLength: number;
+
+  @Prop()
   separateRating: SeparateRating[];
 
   @Prop()

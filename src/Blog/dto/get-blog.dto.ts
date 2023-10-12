@@ -1,8 +1,11 @@
-import { Contact, EntrancePrice } from '../schemas/blog.schema';
+import { OpenTime } from '../schemas/blog.schema';
 
 export class BlogSummaryDto {
   readonly title: string;
   readonly category: string;
-  readonly entrancePrice: EntrancePrice;
-  readonly contact: Contact;
+  readonly rating: number;
+  readonly reviewLength: number;
+  readonly address: string;
+  readonly openTime: OpenTime[];
+  readonly firstImage: string | null;
 }
