@@ -52,7 +52,7 @@ export class ReviewService {
 
     const reviewSaved = await this.reviewModel.create(review);
     await this.blogService.updateBlogReviwsById(review.blogId, reviewSaved.id);
-    await this.blogService.initBlogSeperateRatingById(
+    await this.blogService.initBlogRatingById(
       review.blogId,
       reviewSaved.rating,
     );

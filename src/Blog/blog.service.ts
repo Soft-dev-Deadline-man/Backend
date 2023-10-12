@@ -46,11 +46,11 @@ export class BlogService {
 
   async findById(id: string): Promise<Blog> {
     const blog = await this.blogModel.findById(id).exec();
-
     if (!blog) {
       throw new NotFoundException('Blog not found');
     }
-
+    blog.reviewLength = blog.reviews ? blog.reviews.length : 0;
+    blog.images = blog.images || [];
     return blog;
   }
 
@@ -104,29 +104,30 @@ export class BlogService {
     return blog;
   }
 
-  async updateBlogSeperateRatingById(
-    blogId: string,
-    userId: string,
-    newScore: number,
-  ): Promise<unknown> {
-    const blog = await this.blogModel.findById(blogId).exec();
+  async initBlogRatingById(id: string, score: number): Promise<unknown> {
+    const blog = await this.blogModel.findById(id).exec();
     if (!blog) {
       throw new NotFoundException('Blog not found');
     }
-    if (newScore < 1 || newScore > 5) {
+
+    if (score < 1 || score > 5) {
       throw new BadRequestException('Invalid score value');
     }
-    const previousScore = blog.rating[userId];
+    const ratingProperty = `rate${score}`;
+    blog.separateRating[ratingProperty] += 1;
 
-    if (previousScore !== undefined) {
-      const previousRatingProperty = `rate${previousScore}`;
-      blog.separateRating[previousRatingProperty] -= 1;
-    }
-    const newRatingProperty = `rate${newScore}`;
-    blog.separateRating[newRatingProperty] += 1;
-    blog.rating[userId] = newScore;
-    const updatedBlog = await blog.save();
-    return updatedBlog;
+    await this.blogModel.findByIdAndUpdate(
+      id,
+      {
+        ...blog,
+        seperateRating: blog.separateRating,
+      },
+      {
+        new: true,
+      },
+    );
+
+    return blog;
   }
 
   async updateImageById(
