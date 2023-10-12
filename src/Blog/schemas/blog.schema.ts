@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { now } from 'mongoose';
 import { Review } from 'src/review/schemas/review.schema';
 
 export enum Category {
@@ -18,25 +17,6 @@ export class Forbidden {
 
   @Prop()
   alcohol: boolean;
-}
-
-export enum forbidden {
-  animal = "",
-  smoke = "",
-  alcohol = "",
-}
-
-export enum contact {
-  tel = "",
-  website = "",
-  facebook = "",
-  ig = ""
-}
-
-export enum entrancePrice {
-  child = "",
-  adult = "",
-  foreign = "",
 }
 
 export class OpenTime {
@@ -100,6 +80,9 @@ export class Blog {
   rating: number;
 
   @Prop()
+  reviewLength: number;
+
+  @Prop()
   separateRating: SeparateRating[];
 
   @Prop()
@@ -119,12 +102,6 @@ export class Blog {
 
   @Prop()
   images: string[];
-
-  @Prop({default: now()})
-  createdAt: Date;
-
-  @Prop({default: now()})
-  updatedAt: Date;
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);

@@ -96,7 +96,7 @@ export class UserService {
       password: hashedPassword,
     });
 
-    return "update password successful"
+    return 'Update password successful';
   }
 
   async updateById(id: string, user: User): Promise<User> {
