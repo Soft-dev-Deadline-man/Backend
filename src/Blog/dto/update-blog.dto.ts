@@ -1,4 +1,3 @@
-import { Review } from 'src/review/schemas/review.schema';
 import {
   Category,
   Contact,
@@ -19,7 +18,7 @@ export class UpdateBlogDto {
   readonly reviewLength: number;
   readonly separateRating: SeparateRating;
 
-  readonly reviews: Review[];
+  readonly reviews: string[];
   readonly latitude: string;
   readonly longitude: string;
 

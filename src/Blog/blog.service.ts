@@ -50,6 +50,27 @@ export class BlogService {
     return blog;
   }
 
+  async updateBlogReviwsById(id: string, reviewId: string): Promise<unknown> {
+    const blog = await this.blogModel.findById(id).exec();
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+
+    blog.reviews.push(reviewId);
+    await this.blogModel.findByIdAndUpdate(
+      id,
+      {
+        ...blog,
+        reviews: blog.reviews,
+      },
+      {
+        new: true,
+      },
+    );
+
+    return blog;
+  }
+
   async updateImageById(
     id: string,
     images: string[] | undefined,

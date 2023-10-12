@@ -1,6 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
-import { Review } from 'src/review/schemas/review.schema';
 
 export enum Category {
   BEACH = 'ชายหาดและทะเล',
@@ -95,8 +93,8 @@ export class Blog {
   @Prop()
   separateRating: SeparateRating;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }] })
-  reviews: Review[];
+  @Prop()
+  reviews: string[];
 
   @Prop()
   latitude: string;

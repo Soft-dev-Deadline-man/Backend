@@ -7,7 +7,6 @@ import {
   OpenTime,
   SeparateRating,
 } from '../schemas/blog.schema';
-import { Review } from 'src/review/schemas/review.schema';
 
 export class CreateBlogDto {
   @IsNotEmpty()
@@ -26,7 +25,7 @@ export class CreateBlogDto {
   readonly reviewLength: number;
   readonly separateRating: SeparateRating;
 
-  readonly reviews: Review[];
+  readonly reviews: string[];
 
   @IsNotEmpty()
   readonly latitude: string;

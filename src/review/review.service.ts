@@ -50,7 +50,10 @@ export class ReviewService {
 
     this.blogService.updateImageById(review.blogId, review.images);
 
-    return await this.reviewModel.create(review);
+    const reviewSaved = await this.reviewModel.create(review);
+    await this.blogService.updateBlogReviwsById(review.blogId, reviewSaved.id);
+
+    return reviewSaved.save();
   }
 
   async updateById(id: string, review: Review): Promise<Review> {
