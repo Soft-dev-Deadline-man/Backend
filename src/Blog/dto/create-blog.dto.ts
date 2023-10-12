@@ -23,6 +23,7 @@ export class CreateBlogDto {
   readonly address: string;
 
   readonly rating: number;
+  readonly reviewLength: number;
   readonly separateRating: SeparateRating[];
 
   readonly reviews: Review[];

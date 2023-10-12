@@ -14,13 +14,25 @@ export class BlogService {
 
   async findAll(): Promise<BlogSummaryDto[]> {
     const blogs = await this.blogModel.find().exec();
-
+    blogs.forEach((blog) => {
+      if (blog.reviews === null) {
+        blog.reviewLength = 0;
+      } else {
+        blog.reviewLength = blog.reviews.length;
+      }
+      if (blog.images === null) {
+        blog.images = [];
+      }
+    });
     return blogs.map((blog) => ({
       _id: blog._id,
       title: blog.title,
       category: blog.category,
-      entrancePrice: blog.entrancePrice,
-      contact: blog.contact,
+      rating: blog.rating,
+      reviewLength: blog.reviewLength,
+      address: blog.address,
+      openTime: blog.openTime,
+      firstImage: blog.images.length > 0 ? blog.images[0] : null,
     }));
   }
 
