@@ -7,11 +7,14 @@ import { ReviewService } from './review.service';
 import { UserModule } from 'src/User/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { BlogService } from 'src/Blog/blog.service';
+import { BlogModule } from 'src/Blog/blog.module';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Review.name, schema: ReviewSchema }]),
     UserModule,
+    BlogModule,
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('credential.jwt_secret'),

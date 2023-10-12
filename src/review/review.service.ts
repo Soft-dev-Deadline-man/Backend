@@ -9,12 +9,14 @@ import mongoose from 'mongoose';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { BlogService } from 'src/Blog/blog.service';
 
 @Injectable()
 export class ReviewService {
   constructor(
     @InjectModel(Review.name)
     private readonly reviewModel: mongoose.Model<Review>,
+    private readonly blogService: BlogService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}
@@ -45,8 +47,10 @@ export class ReviewService {
       spendTime: createReviewDto.spendTime,
       rating: createReviewDto.rating,
     };
+
+    this.blogService.updateImageById(review.blogId,review.images);
+
     return await this.reviewModel.create(review);
-    // const token =
   }
 
   async updateById(id: string, review: Review): Promise<Review> {

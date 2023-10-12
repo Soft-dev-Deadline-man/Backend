@@ -50,6 +50,46 @@ export class BlogService {
     return blog;
   }
 
+  async updateImageById(
+    id: string,
+    images: string[] | undefined,
+  ): Promise<unknown> {
+    const blog = await this.blogModel.findById(id).exec();
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+
+    var isUpdated = false;
+    for (var inputImg in images) {
+      var isSaved = false;
+      for (var imageInDB in blog.images) {
+        if (inputImg == imageInDB) {
+          isSaved = true;
+          break;
+        }
+      }
+      if (!isSaved) {
+        isUpdated = true;
+        blog.images.push(inputImg);
+      }
+    }
+
+    if (isUpdated) {
+      return await this.blogModel.findByIdAndUpdate(
+        id,
+        {
+          ...blog,
+          images: blog.images,
+        },
+        {
+          new: true,
+        },
+      );
+    }
+
+    return blog;
+  }
+
   async updateById(id: string, blog: Blog): Promise<Blog> {
     return (await this.blogModel
       .findByIdAndUpdate(id, blog, {
