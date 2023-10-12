@@ -1,6 +1,6 @@
 import { BufferedFile } from '../minio-client/file.model';
 import { MinioClientService } from '../minio-client/minio-client.service';
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { Review } from 'src/review/schemas/review.schema';
 import { ReviewService } from 'src/review/review.service';
 
@@ -20,8 +20,9 @@ export class ImageUploadService {
         message: 'Image uploaded successfully',
       };
     } catch (err) {
-      // console.log('Error', err);
       return {
+        status:
+          err instanceof HttpException ? err.message : 'Unknown Exception',
         message: 'Image uploaded failed',
       };
     }
