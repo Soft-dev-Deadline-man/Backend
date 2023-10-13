@@ -25,6 +25,10 @@ export class ReviewService {
     return await this.reviewModel.find().exec();
   }
 
+  async findAllbyBlogId(blogId: string): Promise<Review[]> {
+    return await this.reviewModel.find({ blogId: blogId }).exec();
+  }
+
   async create(
     header: Record<string, string>,
     createReviewDto: CreateReviewDto,
