@@ -1,14 +1,14 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { OAuth2Client } from 'google-auth-library';
-import { TokenPayload } from './interface/tokenPayload.interface';
-import { User } from '../User/schemas/user.schema';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
-import { UserService } from 'src/User/user.service';
-import { AuthEmail, AuthGoogleLogin, RegistEmail } from './dto/auth-login.dto';
-import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { OAuth2Client } from "google-auth-library";
+import { TokenPayload } from "./interface/tokenPayload.interface";
+import { User } from "../User/schemas/user.schema";
+import { Model } from "mongoose";
+import { InjectModel } from "@nestjs/mongoose";
+import { UserService } from "src/User/user.service";
+import { AuthEmail, AuthGoogleLogin, RegistEmail } from "./dto/auth-login.dto";
+import { ConfigService } from "@nestjs/config";
+import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class AuthService {
@@ -25,7 +25,7 @@ export class AuthService {
       const user = await this.userService.findByEmail(email);
       if (!user) {
         const saltRounds = this.configService.get<number>(
-          'credential.bcrypt_salt_round',
+          "credential.bcrypt_salt_round",
         );
         const hashedPassword = bcrypt.hashSync(password, saltRounds as number);
 
@@ -43,7 +43,7 @@ export class AuthService {
       } else {
         throw new HttpException(
           {
-            message: 'User with this email already exists.',
+            message: "User with this email already exists.",
           },
           HttpStatus.BAD_REQUEST,
         );
@@ -51,7 +51,7 @@ export class AuthService {
     } catch (error) {
       throw new HttpException(
         {
-          message: 'Registation fail.',
+          message: "Registation fail.",
         },
         HttpStatus.BAD_REQUEST,
       );
@@ -63,7 +63,7 @@ export class AuthService {
     if (!user) {
       throw new HttpException(
         {
-          message: 'User or Password incorrect.',
+          message: "User or Password incorrect.",
         },
         HttpStatus.BAD_REQUEST,
       );
@@ -79,7 +79,7 @@ export class AuthService {
       } else {
         throw new HttpException(
           {
-            message: 'User or Password incorrect.',
+            message: "User or Password incorrect.",
           },
           HttpStatus.BAD_REQUEST,
         );
@@ -87,7 +87,7 @@ export class AuthService {
     } else {
       throw new HttpException(
         {
-          message: 'User or Password incorrect.',
+          message: "User or Password incorrect.",
         },
         HttpStatus.BAD_REQUEST,
       );
@@ -96,25 +96,25 @@ export class AuthService {
 
   async authenticateWithGoogleOAuth({ credential }: AuthGoogleLogin) {
     const client = new OAuth2Client(
-      this.configService.get<string>('oauth.id'),
-      this.configService.get<string>('oauth.secret'),
+      this.configService.get<string>("oauth.id"),
+      this.configService.get<string>("oauth.secret"),
     );
     const ticket = await client.verifyIdToken({
       idToken: credential,
-      audience: this.configService.get('oauth.id'),
+      audience: this.configService.get("oauth.id"),
     });
 
     const {
-      email = '',
-      name = '',
-      family_name = '',
-      picture = '',
+      email = "",
+      name = "",
+      family_name = "",
+      picture = "",
     } = ticket.getPayload() || {};
     const user = await this.userService.findByEmail(email);
     if (!user) {
       const newUser = new this.userModel({
         email: email,
-        name: name + ' ' + family_name,
+        name: name + " " + family_name,
         profile: picture,
       });
       await newUser.save();
@@ -131,7 +131,7 @@ export class AuthService {
     } else {
       throw new HttpException(
         {
-          message: 'User not found',
+          message: "User not found",
         },
         HttpStatus.BAD_REQUEST,
       );
@@ -141,8 +141,8 @@ export class AuthService {
   private generateAccessToken(userId: string) {
     const payload: TokenPayload = { userId };
     return this.jwtService.sign(payload, {
-      secret: this.configService.get<string>('credential.jwt_secret'),
-      expiresIn: '1d',
+      secret: this.configService.get<string>("credential.jwt_secret"),
+      expiresIn: "1d",
     });
   }
 }

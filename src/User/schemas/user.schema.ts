@@ -1,8 +1,8 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 export enum UserRole {
-  ADMIN = 'admin',
-  USER = 'user',
+  ADMIN = "admin",
+  USER = "user",
 }
 
 @Schema({
@@ -18,7 +18,7 @@ export class User {
   @Prop({
     type: String,
     default:
-      process.env.MINIO_ENDPOINT === 'minio'
+      process.env.MINIO_ENDPOINT === "minio"
         ? // Production
           `https://${process.env.MINIO_ENDPOINT}.${process.env.DOMAIN_NAME}/picture-bucket/289f07480b8a5aec15ae3b537f58cf8f.jpg`
         : // Development

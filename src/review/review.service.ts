@@ -2,14 +2,14 @@ import {
   Injectable,
   NotAcceptableException,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Review } from './schemas/review.schema';
-import mongoose from 'mongoose';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-import { BlogService } from 'src/Blog/blog.service';
+} from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Review } from "./schemas/review.schema";
+import mongoose from "mongoose";
+import { CreateReviewDto } from "./dto/create-review.dto";
+import { BlogService } from "src/Blog/blog.service";
+import { User } from "src/User/schemas/user.schema";
+import { UserService } from "src/User/user.service";
 
 @Injectable()
 export class ReviewService {
@@ -17,8 +17,7 @@ export class ReviewService {
     @InjectModel(Review.name)
     private readonly reviewModel: mongoose.Model<Review>,
     private readonly blogService: BlogService,
-    private readonly jwtService: JwtService,
-    private readonly configService: ConfigService,
+    private readonly userService: UserService,
   ) {}
 
   async findAll(): Promise<Review[]> {
@@ -29,18 +28,10 @@ export class ReviewService {
     return await this.reviewModel.find({ blogId: blogId }).exec();
   }
 
-  async create(
-    header: Record<string, string>,
-    createReviewDto: CreateReviewDto,
-  ): Promise<Review> {
-    if (!header.authorization) {
-      throw new NotFoundException('Not Login');
-    }
-    const userId = this.jwtService.verify(header.authorization.split(' ')[1], {
-      secret: this.configService.get<string>('credential.jwt_secret'),
-    }).userId;
+  async create(user: User, createReviewDto: CreateReviewDto): Promise<Review> {
+    const userId = await this.userService.findByEmailReturnId(user.email);
     if (!userId) {
-      throw new NotAcceptableException('Token is not valid');
+      throw new NotAcceptableException("Not Login");
     }
     const review: Review = {
       blogId: createReviewDto.blogId,
@@ -68,14 +59,13 @@ export class ReviewService {
   async updateById(id: string, review: Review): Promise<Review> {
     const savedReview = await this.reviewModel.findById(id).exec();
     if (!savedReview) {
-      throw new NotFoundException('Review not found');
+      throw new NotFoundException("Review not found");
     }
 
     const previousRating = savedReview.rating;
     const newRating = review.rating;
 
     if (newRating && previousRating !== newRating) {
-      // console.log('Activated');
       await this.blogService.deleteBlogSeparateRatingById(
         savedReview.blogId,
         previousRating,
@@ -97,7 +87,7 @@ export class ReviewService {
   async deleteById(id: string): Promise<Review> {
     const reviewSaved = await this.reviewModel.findById(id);
     if (!reviewSaved) {
-      throw new NotAcceptableException('Token is not valid');
+      throw new NotAcceptableException("Token is not valid");
     }
     await this.blogService.updateBlogReviwsById(
       reviewSaved.blogId,

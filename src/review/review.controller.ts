@@ -7,20 +7,20 @@ import {
   Post,
   Get,
   UseGuards,
-} from '@nestjs/common';
-import { ReviewService } from './review.service';
-import { CreateReviewDto } from './dto/create-review.dto';
-import { Review } from './schemas/review.schema';
-import { UpdateReviewDto } from './dto/update-review.dto';
-import { ReturnReviewDto } from './dto/return-review.dto';
-import { UserService } from 'src/User/user.service';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { User } from '../User/schemas/user.schema';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { Headers } from '@nestjs/common';
+} from "@nestjs/common";
+import { ReviewService } from "./review.service";
+import { CreateReviewDto } from "./dto/create-review.dto";
+import { Review } from "./schemas/review.schema";
+import { UpdateReviewDto } from "./dto/update-review.dto";
+import { ReturnReviewDto } from "./dto/return-review.dto";
+import { UserService } from "src/User/user.service";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { User } from "../User/schemas/user.schema";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { CurrentUser } from "src/User/common/decorator/user.decorator";
 
-@ApiTags('reviews')
-@Controller('review')
+@ApiTags("reviews")
+@Controller("review")
 export class ReviewController {
   constructor(
     private readonly reviewService: ReviewService,
@@ -53,8 +53,8 @@ export class ReviewController {
     );
   }
 
-  @Get('/get-review-by-blog-id/:id')
-  async getReviewsByBlogId(@Param('id') blogId: string) {
+  @Get("/get-review-by-blog-id/:id")
+  async getReviewsByBlogId(@Param("id") blogId: string) {
     const reviews = await this.reviewService.findAllbyBlogId(blogId);
 
     return await Promise.all(
@@ -83,27 +83,26 @@ export class ReviewController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async createReview(
-    @Headers() header: Record<string, string>,
+    @CurrentUser() user: User,
     @Body() createReviewDto: CreateReviewDto,
   ): Promise<Review> {
-    console.log(createReviewDto);
-    return await this.reviewService.create(header, createReviewDto);
+    return await this.reviewService.create(user, createReviewDto);
   }
 
-  @Patch(':id')
+  @Patch(":id")
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async updateReview(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() review: UpdateReviewDto,
   ): Promise<Review> {
     return await this.reviewService.updateById(id, review);
   }
 
-  @Delete(':id')
+  @Delete(":id")
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async deleteReview(@Param('id') id: string): Promise<Review> {
+  async deleteReview(@Param("id") id: string): Promise<Review> {
     return await this.reviewService.deleteById(id);
   }
 }

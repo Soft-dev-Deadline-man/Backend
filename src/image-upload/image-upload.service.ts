@@ -1,8 +1,8 @@
-import { BufferedFile } from '../minio-client/file.model';
-import { MinioClientService } from '../minio-client/minio-client.service';
-import { HttpException, Injectable } from '@nestjs/common';
-import { Review } from 'src/review/schemas/review.schema';
-import { ReviewService } from 'src/review/review.service';
+import { BufferedFile } from "../minio-client/file.model";
+import { MinioClientService } from "../minio-client/minio-client.service";
+import { HttpException, Injectable } from "@nestjs/common";
+import { Review } from "src/review/schemas/review.schema";
+import { ReviewService } from "src/review/review.service";
 
 @Injectable()
 export class ImageUploadService {
@@ -17,15 +17,15 @@ export class ImageUploadService {
 
       return {
         image_url: uploaded_image.url,
-        message: 'Image uploaded successfully',
+        message: "Image uploaded successfully",
       };
     } catch (err) {
       return {
         status:
           err instanceof HttpException
             ? err.message
-            : 'Unknown error encountered',
-        message: 'Image uploaded failed',
+            : "Unknown error encountered",
+        message: "Image uploaded failed",
       };
     }
   }
@@ -41,15 +41,15 @@ export class ImageUploadService {
         images: imageUrls,
       } as Review);
       return {
-        message: 'Images uploaded successfully',
+        message: "Images uploaded successfully",
       };
     } catch (err) {
       return {
         err:
           err instanceof HttpException
             ? err.message
-            : 'Unknown error encountered',
-        message: 'Images uploaded failed',
+            : "Unknown error encountered",
+        message: "Images uploaded failed",
       };
     }
   }

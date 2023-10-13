@@ -11,7 +11,7 @@ export default () => ({
     accessKey: process.env.MINIO_ACCESS_KEY,
     secretKey: process.env.MINIO_SECRET_KEY,
     useSSL: process.env.MINIO_USE_SSL
-      ? process.env.MINIO_USE_SSL.toLowerCase() === 'true'
+      ? process.env.MINIO_USE_SSL.toLowerCase() === "true"
       : false,
     bucket: process.env.MINIO_BUCKET_NAME,
   },

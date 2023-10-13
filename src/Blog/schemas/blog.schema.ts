@@ -1,11 +1,11 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 
 export enum Category {
-  BEACH = 'ชายหาดและทะเล',
-  SHOP = 'ช็อปปิ้ง',
-  HISTORY = 'ประวัติศาสตร์ วัฒนธรรม และศาสนา',
-  ENTERTAIN = 'สวนสัตว์ สวนน้ำ และสวนสนุก',
-  MEUSEUM = 'พิพิธภัณฑ์ และแหล่งเรียนรู้ทางธรรมชาติ',
+  BEACH = "ชายหาดและทะเล",
+  SHOP = "ช็อปปิ้ง",
+  HISTORY = "ประวัติศาสตร์ วัฒนธรรม และศาสนา",
+  ENTERTAIN = "สวนสัตว์ สวนน้ำ และสวนสนุก",
+  MEUSEUM = "พิพิธภัณฑ์ และแหล่งเรียนรู้ทางธรรมชาติ",
 }
 export class Forbidden {
   @Prop()

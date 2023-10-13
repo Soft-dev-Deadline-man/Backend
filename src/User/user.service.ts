@@ -2,12 +2,12 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { User } from './schemas/user.schema';
-import * as mongoose from 'mongoose';
-import * as bcrypt from 'bcrypt';
-import { ConfigService } from '@nestjs/config';
+} from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { User } from "./schemas/user.schema";
+import * as mongoose from "mongoose";
+import * as bcrypt from "bcrypt";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class UserService {
@@ -36,7 +36,7 @@ export class UserService {
     const user = await this.userModel.findById(id).exec();
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     return user;
@@ -55,12 +55,12 @@ export class UserService {
 
   async addBookmarkByUserId(userId: string, bookmarkId: string) {
     const user = await this.userModel.findById(userId);
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException("User not found");
 
     const bookmarkUser = user.bookmark;
     for (const bookmark in bookmarkUser) {
       if (bookmark == bookmarkId)
-        throw new BadRequestException('user is already bookmarked this blog');
+        throw new BadRequestException("user is already bookmarked this blog");
     }
     bookmarkUser.push(bookmarkId);
 
@@ -75,17 +75,17 @@ export class UserService {
       },
     );
 
-    return 'add bookmark successful';
+    return "add bookmark successful";
   }
 
   async deleteBookmarkByUserId(userId: string, bookmarkId: string) {
     const user = await this.userModel.findById(userId);
-    if (!user) throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException("User not found");
 
     const bookmarkUser = user.bookmark;
 
     const index = bookmarkUser.indexOf(bookmarkId);
-    if (!index) throw new NotFoundException('User never bookmarks this blog');
+    if (!index) throw new NotFoundException("User never bookmarks this blog");
     bookmarkUser.splice(index, 1);
 
     await this.userModel.findByIdAndUpdate(
@@ -99,13 +99,13 @@ export class UserService {
       },
     );
 
-    return 'delete bookmark successful';
+    return "delete bookmark successful";
   }
 
   async findByEmailReturnId(email: string): Promise<string> {
     const user = await this.userModel.findOne({ email: email }).exec();
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
     return user.id;
   }
@@ -113,7 +113,7 @@ export class UserService {
   async changeUserProfile(id: string, image: string) {
     const user = this.userModel.findById(id).exec();
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
     return await this.userModel.findByIdAndUpdate(
       id,
@@ -130,13 +130,13 @@ export class UserService {
   async findByIdAndChangePassword(id: string, password: string) {
     const user = this.userModel.findById(id).exec();
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     let hashedPassword: string;
     try {
       const saltRounds = this.configService.get<number>(
-        'credential.bcrypt_salt_round',
+        "credential.bcrypt_salt_round",
       );
       hashedPassword = bcrypt.hashSync(password, saltRounds as number);
     } catch (err) {
@@ -149,7 +149,7 @@ export class UserService {
       password: hashedPassword,
     });
 
-    return 'Update password successful';
+    return "Update password successful";
   }
 
   async updateById(id: string, user: User): Promise<User> {

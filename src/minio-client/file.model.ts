@@ -23,4 +23,4 @@ export interface HasFile {
   file: Buffer | string;
 }
 
-export type AppMimeType = 'image/png' | 'image/jpeg';
+export type AppMimeType = "image/png" | "image/jpeg";

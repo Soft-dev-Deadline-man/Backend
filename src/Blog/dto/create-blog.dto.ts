@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from "class-validator";
 import {
   Category,
   Contact,
@@ -6,7 +6,7 @@ import {
   Forbidden,
   OpenTime,
   SeparateRating,
-} from '../schemas/blog.schema';
+} from "../schemas/blog.schema";
 
 export class CreateBlogDto {
   @IsNotEmpty()

@@ -5,7 +5,7 @@ import {
   Forbidden,
   OpenTime,
   SeparateRating,
-} from '../schemas/blog.schema';
+} from "../schemas/blog.schema";
 
 export class UpdateBlogDto {
   readonly title: string;

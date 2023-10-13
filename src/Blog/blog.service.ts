@@ -2,12 +2,12 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Blog } from './schemas/blog.schema';
-import mongoose from 'mongoose';
-import { BlogSummaryDto } from './dto/get-blog.dto';
-import { CreateBlogDto } from './dto/create-blog.dto';
+} from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Blog } from "./schemas/blog.schema";
+import mongoose from "mongoose";
+import { BlogSummaryDto } from "./dto/get-blog.dto";
+import { CreateBlogDto } from "./dto/create-blog.dto";
 
 @Injectable()
 export class BlogService {
@@ -17,7 +17,7 @@ export class BlogService {
   ) {}
 
   async findAll(): Promise<BlogSummaryDto[]> {
-    const blogs = await this.blogModel.find().populate('reviews').exec();
+    const blogs = await this.blogModel.find().populate("reviews").exec();
     blogs.forEach((blog) => {
       if (blog.reviews === null) {
         blog.reviewLength = 0;
@@ -47,7 +47,7 @@ export class BlogService {
   async findById(id: string): Promise<Blog> {
     const blog = await this.blogModel.findById(id).exec();
     if (!blog) {
-      throw new NotFoundException('Blog not found');
+      throw new NotFoundException("Blog not found");
     }
     blog.reviewLength = blog.reviews ? blog.reviews.length : 0;
     blog.images = blog.images || [];
@@ -57,7 +57,7 @@ export class BlogService {
   async findBriefBlogById(id: string): Promise<BlogSummaryDto> {
     const blog = await this.blogModel.findById(id).exec();
     if (!blog) {
-      throw new NotFoundException('Blog not found');
+      throw new NotFoundException("Blog not found");
     }
     blog.reviewLength = blog.reviews ? blog.reviews.length : 0;
     blog.images = blog.images || [];
@@ -80,7 +80,7 @@ export class BlogService {
   ): Promise<unknown> {
     const blog = await this.blogModel.findById(id).exec();
     if (!blog) {
-      throw new NotFoundException('Blog not found');
+      throw new NotFoundException("Blog not found");
     }
     if (blog.reviews === null) {
       blog.reviews = [];
@@ -115,11 +115,11 @@ export class BlogService {
   ): Promise<unknown> {
     const blog = await this.blogModel.findById(id).exec();
     if (!blog) {
-      throw new NotFoundException('Blog not found');
+      throw new NotFoundException("Blog not found");
     }
 
     if (score < 1 || score > 5) {
-      throw new BadRequestException('Invalid score value');
+      throw new BadRequestException("Invalid score value");
     }
     const ratingProperty = `rate${score}`;
     blog.separateRating[ratingProperty] += 1;
@@ -144,11 +144,11 @@ export class BlogService {
   ): Promise<unknown> {
     const blog = await this.blogModel.findById(id).exec();
     if (!blog) {
-      throw new NotFoundException('Blog not found');
+      throw new NotFoundException("Blog not found");
     }
 
     if (score < 1 || score > 5) {
-      throw new BadRequestException('Invalid score value');
+      throw new BadRequestException("Invalid score value");
     }
 
     const ratingProperty = `rate${score}`;
@@ -173,7 +173,7 @@ export class BlogService {
   async calculateOverallRating(id: string): Promise<string> {
     const blog = await this.blogModel.findById(id).exec();
     if (!blog) {
-      throw new NotFoundException('Blog not found');
+      throw new NotFoundException("Blog not found");
     }
 
     const separateRating = blog.separateRating;
@@ -192,7 +192,7 @@ export class BlogService {
       separateRating.rate1;
 
     if (totalRatings === 0) {
-      return '0.0';
+      return "0.0";
     }
 
     const overallRating = (weightedSum / totalRatings).toFixed(1);
@@ -219,7 +219,7 @@ export class BlogService {
   ): Promise<unknown> {
     const blog = await this.blogModel.findById(id).exec();
     if (!blog) {
-      throw new NotFoundException('Blog not found');
+      throw new NotFoundException("Blog not found");
     }
 
     let isUpdated = false;
