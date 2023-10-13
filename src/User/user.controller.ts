@@ -57,6 +57,17 @@ export class UserController {
     return await this.userService.addBookmarkByUserId(id, blogId);
   }
 
+  @Delete('delete-bookmark/:blogId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async deleteBookmark(
+    @CurrentUser() user: User,
+    @Param('blogId') blogId: string,
+  ): Promise<unknown> {
+    const id = await this.userService.findByEmailReturnId(user.email);
+    return await this.userService.deleteBookmarkByUserId(id, blogId);
+  }
+
   @Post()
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
