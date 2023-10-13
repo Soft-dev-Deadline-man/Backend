@@ -74,7 +74,8 @@ export class ReviewService {
     const previousRating = savedReview.rating;
     const newRating = review.rating;
 
-    if (previousRating !== newRating) {
+    if (newRating && previousRating !== newRating) {
+      // console.log('Activated');
       await this.blogService.deleteBlogSeparateRatingById(
         savedReview.blogId,
         previousRating,

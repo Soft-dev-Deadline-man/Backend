@@ -42,8 +42,11 @@ export class ImageUploadService {
         message: 'Images uploaded successfully',
       };
     } catch (err) {
-      console.log(err);
       return {
+        err:
+          err instanceof HttpException
+            ? err.message
+            : 'Unknown Error encountered.',
         message: 'Images uploaded failed',
       };
     }
