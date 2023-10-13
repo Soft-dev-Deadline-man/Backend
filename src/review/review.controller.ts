@@ -42,6 +42,7 @@ export class ReviewController {
         returnReviewDto.spendTime = review.spendTime;
         returnReviewDto.rating = review.rating;
         returnReviewDto.author = {
+          _id: review.authorId,
           name: user.name,
           profile: user.profile,
         };
@@ -54,7 +55,28 @@ export class ReviewController {
 
   @Get('/get-review-by-blog-id/:id')
   async getReviewsByBlogId(@Param('id') blogId: string) {
-    return await this.reviewService.findAllbyBlogId(blogId);
+    const reviews = await this.reviewService.findAllbyBlogId(blogId);
+
+    return await Promise.all(
+      reviews.map(async (review) => {
+        const returnReviewDto = new ReturnReviewDto();
+        const user: User = await this.userService.findById(review.authorId);
+        returnReviewDto.blogId = review.blogId;
+        returnReviewDto.title = review.title;
+        returnReviewDto.description = review.description;
+        returnReviewDto.recommendActivity = review.recommendActivity;
+        returnReviewDto.spendTime = review.spendTime;
+        returnReviewDto.rating = review.rating;
+        returnReviewDto.author = {
+          _id: review.authorId,
+          name: user.name,
+          profile: user.profile,
+        };
+        returnReviewDto.score = review.score ? review.score : 0;
+        returnReviewDto.images = review.images ? review.images : [];
+        return returnReviewDto;
+      }),
+    );
   }
 
   @Post()

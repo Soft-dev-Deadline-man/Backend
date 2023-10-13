@@ -1,6 +1,7 @@
 export class ReturnReviewDto {
   blogId: string;
   author: {
+    _id: string;
     name: string;
     profile: string;
   };
