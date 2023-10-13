@@ -22,7 +22,9 @@ export class ImageUploadService {
     } catch (err) {
       return {
         status:
-          err instanceof HttpException ? err.message : 'Unknown Exception',
+          err instanceof HttpException
+            ? err.message
+            : 'Unknown error encountered',
         message: 'Image uploaded failed',
       };
     }
@@ -46,7 +48,7 @@ export class ImageUploadService {
         err:
           err instanceof HttpException
             ? err.message
-            : 'Unknown Error encountered.',
+            : 'Unknown error encountered',
         message: 'Images uploaded failed',
       };
     }

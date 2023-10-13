@@ -18,7 +18,11 @@ export class User {
   @Prop({
     type: String,
     default:
-      'https://minio.pickausername.com/picture-bucket/289f07480b8a5aec15ae3b537f58cf8f.jpg',
+      process.env.MINIO_ENDPOINT === 'minio'
+        ? // Production
+          `https://${process.env.MINIO_ENDPOINT}.${process.env.DOMAIN_NAME}/picture-bucket/289f07480b8a5aec15ae3b537f58cf8f.jpg`
+        : // Development
+          `https://${process.env.MINIO_ENDPOINT}.com/picture-bucket/289f07480b8a5aec15ae3b537f58cf8f.jpg`,
   })
   profile: string;
 
