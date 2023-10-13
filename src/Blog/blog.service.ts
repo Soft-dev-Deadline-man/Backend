@@ -59,7 +59,9 @@ export class BlogService {
     if (!blog) {
       throw new NotFoundException('Blog not found');
     }
-
+    if (blog.reviews === null) {
+      blog.reviews = [];
+    }
     blog.reviews.push(reviewId);
     await this.blogModel.findByIdAndUpdate(
       id,
@@ -104,30 +106,47 @@ export class BlogService {
     return blog;
   }
 
-  async initBlogRatingById(id: string, score: number): Promise<unknown> {
+  async calculateOverallRating(id: string): Promise<string> {
     const blog = await this.blogModel.findById(id).exec();
     if (!blog) {
       throw new NotFoundException('Blog not found');
     }
 
-    if (score < 1 || score > 5) {
-      throw new BadRequestException('Invalid score value');
+    const separateRating = blog.separateRating;
+    const weightedSum =
+      separateRating.rate5 * 5 +
+      separateRating.rate4 * 4 +
+      separateRating.rate3 * 3 +
+      separateRating.rate2 * 2 +
+      separateRating.rate1 * 1;
+
+    const totalRatings =
+      separateRating.rate5 +
+      separateRating.rate4 +
+      separateRating.rate3 +
+      separateRating.rate2 +
+      separateRating.rate1;
+
+    if (totalRatings === 0) {
+      return '0.0';
     }
-    const ratingProperty = `rate${score}`;
-    blog.separateRating[ratingProperty] += 1;
+
+    const overallRating = (weightedSum / totalRatings).toFixed(1);
+
+    blog.rating = parseFloat(overallRating);
 
     await this.blogModel.findByIdAndUpdate(
       id,
       {
         ...blog,
-        seperateRating: blog.separateRating,
+        rating: parseFloat(overallRating),
       },
       {
         new: true,
       },
     );
 
-    return blog;
+    return overallRating;
   }
 
   async updateImageById(
