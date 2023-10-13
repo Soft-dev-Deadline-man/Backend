@@ -25,6 +25,7 @@ env:
   GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
   JWT_SECRET: ${{ secrets.JWT_SECRET }}
   BCRYPT_SALT_ROUND: ${{ secrets.BCRYPT_SALT_ROUND }}
+  DOMAIN_NAME: ${{ secrets.DOMAIN_NAME }}
 
 jobs:
   deploy:

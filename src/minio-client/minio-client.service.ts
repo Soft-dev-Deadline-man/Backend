@@ -117,13 +117,23 @@ export class MinioClientService {
         }
       },
     );
-
     return {
-      url: `${this.configService.get<string>(
-        'minio.endpoint',
-      )}:${this.configService.get<number>(
-        'minio.port',
-      )}/${this.configService.get<string>('minio.bucket')}/${fileName}`,
+      url:
+        this.configService.get<string>('minio.endpoint') === 'minio'
+          ? // Production
+            `${this.configService.get<string>(
+              'minio.endpoint',
+            )}.${this.configService.get<string>(
+              'domain',
+            )}${this.configService.get<number>(
+              'minio.port',
+            )}/${this.configService.get<string>('minio.bucket')}/${fileName}`
+          : // Development
+            `${this.configService.get<string>(
+              'minio.endpoint',
+            )}:${this.configService.get<number>(
+              'minio.port',
+            )}/${this.configService.get<string>('minio.bucket')}/${fileName}`,
     };
   }
 
