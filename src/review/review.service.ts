@@ -56,7 +56,7 @@ export class ReviewService {
 
     const reviewSaved = await this.reviewModel.create(review);
     await this.blogService.updateBlogReviwsById(review.blogId, reviewSaved.id);
-    await this.blogService.updateBlogSeperateRatingById(
+    await this.blogService.updateBlogSeparateRatingById(
       review.blogId,
       reviewSaved.rating,
     );
@@ -75,11 +75,11 @@ export class ReviewService {
     const newRating = review.rating;
 
     if (previousRating !== newRating) {
-      await this.blogService.deleteBlogSeperateRatingById(
+      await this.blogService.deleteBlogSeparateRatingById(
         savedReview.blogId,
         previousRating,
       );
-      await this.blogService.updateBlogSeperateRatingById(
+      await this.blogService.updateBlogSeparateRatingById(
         savedReview.blogId,
         newRating,
       );
@@ -103,7 +103,7 @@ export class ReviewService {
       reviewSaved.id,
       false,
     );
-    await this.blogService.deleteBlogSeperateRatingById(
+    await this.blogService.deleteBlogSeparateRatingById(
       reviewSaved.blogId,
       reviewSaved.rating,
     );

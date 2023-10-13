@@ -109,7 +109,7 @@ export class BlogService {
     return blog;
   }
 
-  async updateBlogSeperateRatingById(
+  async updateBlogSeparateRatingById(
     id: string,
     score: number,
   ): Promise<unknown> {
@@ -138,7 +138,7 @@ export class BlogService {
     return blog;
   }
 
-  async deleteBlogSeperateRatingById(
+  async deleteBlogSeparateRatingById(
     id: string,
     score: number,
   ): Promise<unknown> {
