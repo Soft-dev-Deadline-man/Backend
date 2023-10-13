@@ -107,6 +107,7 @@ export class ReviewService {
       reviewSaved.blogId,
       reviewSaved.rating,
     );
+    await this.blogService.calculateOverallRating(reviewSaved.blogId);
     return (await this.reviewModel.findByIdAndDelete(id).exec()) as Review;
   }
 }
