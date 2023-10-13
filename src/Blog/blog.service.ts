@@ -54,7 +54,11 @@ export class BlogService {
     return blog;
   }
 
-  async updateBlogReviwsById(id: string, reviewId: string): Promise<unknown> {
+  async updateBlogReviwsById(
+    id: string,
+    reviewId: string,
+    addReview: boolean = true,
+  ): Promise<unknown> {
     const blog = await this.blogModel.findById(id).exec();
     if (!blog) {
       throw new NotFoundException('Blog not found');
@@ -62,7 +66,16 @@ export class BlogService {
     if (blog.reviews === null) {
       blog.reviews = [];
     }
-    blog.reviews.push(reviewId);
+
+    if (addReview) {
+      blog.reviews.push(reviewId);
+    } else {
+      const index = blog.reviews.indexOf(reviewId);
+      if (index !== -1) {
+        blog.reviews.splice(index, 1);
+      }
+    }
+
     await this.blogModel.findByIdAndUpdate(
       id,
       {

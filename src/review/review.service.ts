@@ -75,6 +75,15 @@ export class ReviewService {
   }
 
   async deleteById(id: string): Promise<Review> {
+    const reviewSaved = await this.reviewModel.findById(id);
+    if (!reviewSaved) {
+      throw new NotAcceptableException('Token is not valid');
+    }
+    await this.blogService.updateBlogReviwsById(
+      reviewSaved.blogId,
+      reviewSaved.id,
+      false,
+    );
     return (await this.reviewModel.findByIdAndDelete(id).exec()) as Review;
   }
 }
