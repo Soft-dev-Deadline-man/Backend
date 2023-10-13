@@ -22,7 +22,7 @@ export class User {
         ? // Production
           `https://${process.env.MINIO_ENDPOINT}.${process.env.DOMAIN_NAME}/picture-bucket/289f07480b8a5aec15ae3b537f58cf8f.jpg`
         : // Development
-          `https://${process.env.MINIO_ENDPOINT}.com/picture-bucket/289f07480b8a5aec15ae3b537f58cf8f.jpg`,
+          `http://${process.env.MINIO_ENDPOINT}:${process.env.MINIO_PORT}/picture-bucket/289f07480b8a5aec15ae3b537f58cf8f.jpg`,
   })
   profile: string;
 
