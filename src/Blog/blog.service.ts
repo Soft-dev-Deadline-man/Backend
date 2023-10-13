@@ -90,7 +90,7 @@ export class BlogService {
     return blog;
   }
 
-  async initBlogSeperateRatingById(
+  async updateBlogSeperateRatingById(
     id: string,
     score: number,
   ): Promise<unknown> {
@@ -110,6 +110,38 @@ export class BlogService {
       {
         ...blog,
         seperateRating: blog.separateRating,
+      },
+      {
+        new: true,
+      },
+    );
+
+    return blog;
+  }
+
+  async deleteBlogSeperateRatingById(
+    id: string,
+    score: number,
+  ): Promise<unknown> {
+    const blog = await this.blogModel.findById(id).exec();
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+
+    if (score < 1 || score > 5) {
+      throw new BadRequestException('Invalid score value');
+    }
+
+    const ratingProperty = `rate${score}`;
+    if (blog.separateRating[ratingProperty] > 0) {
+      blog.separateRating[ratingProperty] -= 1;
+    }
+
+    await this.blogModel.findByIdAndUpdate(
+      id,
+      {
+        ...blog,
+        separateRating: blog.separateRating,
       },
       {
         new: true,

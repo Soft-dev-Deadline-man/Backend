@@ -56,7 +56,7 @@ export class ReviewService {
 
     const reviewSaved = await this.reviewModel.create(review);
     await this.blogService.updateBlogReviwsById(review.blogId, reviewSaved.id);
-    await this.blogService.initBlogSeperateRatingById(
+    await this.blogService.updateBlogSeperateRatingById(
       review.blogId,
       reviewSaved.rating,
     );
@@ -66,6 +66,25 @@ export class ReviewService {
   }
 
   async updateById(id: string, review: Review): Promise<Review> {
+    const savedReview = await this.reviewModel.findById(id).exec();
+    if (!savedReview) {
+      throw new NotFoundException('Review not found');
+    }
+
+    const previousRating = savedReview.rating;
+    const newRating = review.rating;
+
+    if (previousRating !== newRating) {
+      await this.blogService.deleteBlogSeperateRatingById(
+        savedReview.blogId,
+        previousRating,
+      );
+      await this.blogService.updateBlogSeperateRatingById(
+        savedReview.blogId,
+        newRating,
+      );
+    }
+
     return (await this.reviewModel
       .findByIdAndUpdate({ _id: id }, review, {
         new: true,
@@ -83,6 +102,10 @@ export class ReviewService {
       reviewSaved.blogId,
       reviewSaved.id,
       false,
+    );
+    await this.blogService.deleteBlogSeperateRatingById(
+      reviewSaved.blogId,
+      reviewSaved.rating,
     );
     return (await this.reviewModel.findByIdAndDelete(id).exec()) as Review;
   }
