@@ -4,11 +4,11 @@ import { UserService } from "./user.service";
 import { MongooseModule } from "@nestjs/mongoose";
 import { UserSchema } from "./schemas/user.schema";
 import { User } from "./user";
-// import { JwtModule } from '@nestjs/jwt';
-// import { ConfigService } from '@nestjs/config';
+import { MinioClientModule } from "src/minio-client/minio-client.module";
 
 @Module({
   imports: [
+    MinioClientModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [UserController],

@@ -1,4 +1,6 @@
 import {
+  HttpException,
+  HttpStatus,
   Injectable,
   NotAcceptableException,
   NotFoundException,
@@ -10,6 +12,9 @@ import { CreateReviewDto } from "./dto/create-review.dto";
 import { BlogService } from "src/Blog/blog.service";
 import { User } from "src/User/schemas/user.schema";
 import { UserService } from "src/User/user.service";
+import { UpdateReviewDto } from "./dto/update-review.dto";
+import { BufferedFile } from "src/minio-client/file.model";
+import { MinioClientService } from "../minio-client/minio-client.service";
 
 @Injectable()
 export class ReviewService {
@@ -18,7 +23,25 @@ export class ReviewService {
     private readonly reviewModel: mongoose.Model<Review>,
     private readonly blogService: BlogService,
     private readonly userService: UserService,
+    private readonly minioClientService: MinioClientService,
   ) {}
+
+  private async uploadMultipleImage(images: BufferedFile[]): Promise<string[]> {
+    try {
+      const uploadImages = await this.minioClientService.uploadMultiple(images);
+      const imageUrls = uploadImages.map((obj) => obj.url);
+      if (imageUrls.length === 0) {
+        throw new HttpException(
+          "Not image were uploaded",
+          HttpStatus.BAD_REQUEST,
+        );
+      } else {
+        return imageUrls;
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
 
   async findAll(): Promise<Review[]> {
     return await this.reviewModel.find().exec();
@@ -28,11 +51,18 @@ export class ReviewService {
     return await this.reviewModel.find({ blogId: blogId }).exec();
   }
 
-  async create(user: User, createReviewDto: CreateReviewDto): Promise<Review> {
-    const userId = await this.userService.findByEmailReturnId(user.email);
+  async create(
+    user: User,
+    createReviewDto: CreateReviewDto,
+    images: BufferedFile[],
+  ): Promise<Review> {
+    const userId =
+      await this.userService.findByEmailReturnId("yuuka@email.com");
     if (!userId) {
       throw new NotAcceptableException("Not Login");
     }
+    const imageUrls = await this.uploadMultipleImage(images);
+
     const review: Review = {
       blogId: createReviewDto.blogId,
       authorId: userId,
@@ -41,6 +71,7 @@ export class ReviewService {
       recommendActivity: createReviewDto.recommendActivity,
       spendTime: createReviewDto.spendTime,
       rating: createReviewDto.rating,
+      images: imageUrls,
     };
 
     this.blogService.updateImageById(review.blogId, review.images);
@@ -56,7 +87,11 @@ export class ReviewService {
     return reviewSaved.save();
   }
 
-  async updateById(id: string, review: Review): Promise<Review> {
+  async updateById(
+    id: string,
+    review: UpdateReviewDto,
+    images: BufferedFile[],
+  ): Promise<Review> {
     const savedReview = await this.reviewModel.findById(id).exec();
     if (!savedReview) {
       throw new NotFoundException("Review not found");
@@ -64,6 +99,8 @@ export class ReviewService {
 
     const previousRating = savedReview.rating;
     const newRating = review.rating;
+
+    savedReview.images = await this.uploadMultipleImage(images);
 
     if (newRating && previousRating !== newRating) {
       await this.blogService.deleteBlogSeparateRatingById(

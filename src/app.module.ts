@@ -5,7 +5,6 @@ import { AppService } from "./app.service";
 import { UserModule } from "./User/user.module";
 import { MongooseModule } from "@nestjs/mongoose";
 import { MinioClientModule } from "./minio-client/minio-client.module";
-import { ImageUploadModule } from "./image-upload/image-upload.module";
 import { ReviewModule } from "./review/review.module";
 import { AuthModule } from "./auth/auth.module";
 import { BlogModule } from "./Blog/blog.module";
@@ -27,7 +26,6 @@ import configuration from "./config/configuration";
     UserModule,
     BlogModule,
     MinioClientModule,
-    ImageUploadModule,
     AuthModule,
     BlogModule,
     ReviewModule,

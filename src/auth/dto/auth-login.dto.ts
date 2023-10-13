@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 export class AuthGoogleLogin {
   readonly credential: string;
 }
 
 export class RegistEmail {
-  @IsString()
+  @IsEmail()
   @ApiProperty()
   @IsNotEmpty()
   email: string;
@@ -22,7 +22,7 @@ export class RegistEmail {
 }
 
 export class AuthEmail {
-  @IsString()
+  @IsEmail()
   @ApiProperty()
   @IsNotEmpty()
   email: string;

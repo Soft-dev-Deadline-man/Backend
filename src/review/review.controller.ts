@@ -7,6 +7,8 @@ import {
   Post,
   Get,
   UseGuards,
+  UseInterceptors,
+  UploadedFiles,
 } from "@nestjs/common";
 import { ReviewService } from "./review.service";
 import { CreateReviewDto } from "./dto/create-review.dto";
@@ -14,10 +16,12 @@ import { Review } from "./schemas/review.schema";
 import { UpdateReviewDto } from "./dto/update-review.dto";
 import { ReturnReviewDto } from "./dto/return-review.dto";
 import { UserService } from "src/User/user.service";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { User } from "../User/schemas/user.schema";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { CurrentUser } from "src/User/common/decorator/user.decorator";
+import { BufferedFile } from "src/minio-client/file.model";
+import { FilesInterceptor } from "@nestjs/platform-express";
 
 @ApiTags("reviews")
 @Controller("review")
@@ -80,23 +84,37 @@ export class ReviewController {
   }
 
   @Post()
+  @UseInterceptors(FilesInterceptor("images", 10))
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    type: CreateReviewDto,
+  })
   async createReview(
+    @UploadedFiles() images: BufferedFile[],
     @CurrentUser() user: User,
     @Body() createReviewDto: CreateReviewDto,
   ): Promise<Review> {
-    return await this.reviewService.create(user, createReviewDto);
+    console.log("Files", images);
+    return await this.reviewService.create(user, createReviewDto, images);
   }
 
   @Patch(":id")
+  @UseInterceptors(FilesInterceptor("images", 10))
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    type: UpdateReviewDto,
+  })
   async updateReview(
+    @UploadedFiles() images: BufferedFile[],
     @Param("id") id: string,
     @Body() review: UpdateReviewDto,
   ): Promise<Review> {
-    return await this.reviewService.updateById(id, review);
+    console.log(images);
+    return await this.reviewService.updateById(id, review, images);
   }
 
   @Delete(":id")

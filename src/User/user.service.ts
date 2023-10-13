@@ -1,4 +1,5 @@
 import {
+  HttpException,
   BadRequestException,
   Injectable,
   NotFoundException,
@@ -8,6 +9,8 @@ import { User } from "./schemas/user.schema";
 import * as mongoose from "mongoose";
 import * as bcrypt from "bcrypt";
 import { ConfigService } from "@nestjs/config";
+import { BufferedFile } from "src/minio-client/file.model";
+import { MinioClientService } from "src/minio-client/minio-client.service";
 
 @Injectable()
 export class UserService {
@@ -15,6 +18,7 @@ export class UserService {
     @InjectModel(User.name)
     private readonly userModel: mongoose.Model<User>,
     private readonly configService: ConfigService,
+    private readonly minioClientService: MinioClientService,
   ) {}
 
   async findAll(): Promise<unknown[]> {
@@ -110,21 +114,33 @@ export class UserService {
     return user.id;
   }
 
-  async changeUserProfile(id: string, image: string) {
+  async changeUserProfile(id: string, image: BufferedFile) {
     const user = this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException("User not found");
     }
-    return await this.userModel.findByIdAndUpdate(
-      id,
-      {
-        ...user,
-        profile: image,
-      },
-      {
-        new: true,
-      },
-    );
+
+    try {
+      const uploaded_image = await this.minioClientService.upload(image);
+      return await this.userModel.findByIdAndUpdate(
+        id,
+        {
+          ...user,
+          profile: uploaded_image.url,
+        },
+        {
+          new: true,
+        },
+      );
+    } catch (err) {
+      return {
+        status:
+          err instanceof HttpException
+            ? err.message
+            : "Unknown error encountered",
+        message: "Profile image uploaded failed.",
+      };
+    }
   }
 
   async findByIdAndChangePassword(id: string, password: string) {

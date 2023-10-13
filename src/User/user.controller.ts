@@ -1,4 +1,4 @@
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./schemas/user.schema";
@@ -11,12 +11,16 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { ChangePasswordDto } from "./dto/change-password.dto";
 import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
 import { CurrentUser } from "./common/decorator/user.decorator";
 import { ChangeUserProfileDto } from "./dto/update-user-profile.dto";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { BufferedFile } from "src/minio-client/file.model";
 
 @ApiTags("users")
 @Controller("users")
@@ -36,14 +40,19 @@ export class UserController {
   }
 
   @Post("upload/image")
+  @UseInterceptors(FileInterceptor("image"))
+  @ApiConsumes("multipart/form-data")
+  @ApiBody({
+    type: ChangeUserProfileDto,
+  })
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   async changeUserProfile(
     @CurrentUser() user: User,
-    @Body() image: ChangeUserProfileDto,
+    @UploadedFile() image: BufferedFile,
   ): Promise<unknown> {
     const id = await this.userService.findByEmailReturnId(user.email);
-    return await this.userService.changeUserProfile(id, image.image);
+    return await this.userService.changeUserProfile(id, image);
   }
 
   @Post("add-bookmark/:blogId")
