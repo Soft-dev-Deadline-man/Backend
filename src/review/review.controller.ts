@@ -86,7 +86,7 @@ export class ReviewController {
     @Headers() header: Record<string, string>,
     @Body() createReviewDto: CreateReviewDto,
   ): Promise<Review> {
-    console.log(Body);
+    console.log(createReviewDto);
     return await this.reviewService.create(header, createReviewDto);
   }
 
