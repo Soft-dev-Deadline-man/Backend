@@ -54,6 +54,25 @@ export class BlogService {
     return blog;
   }
 
+  async findBriefBlogById(id: string): Promise<BlogSummaryDto> {
+    const blog = await this.blogModel.findById(id).exec();
+    if (!blog) {
+      throw new NotFoundException('Blog not found');
+    }
+    blog.reviewLength = blog.reviews ? blog.reviews.length : 0;
+    blog.images = blog.images || [];
+    return {
+      _id: blog._id,
+      title: blog.title,
+      category: blog.category,
+      rating: blog.rating,
+      reviewLength: blog.reviewLength,
+      address: blog.address,
+      openTime: blog.openTime,
+      firstImage: blog.images.length > 0 ? blog.images[0] : null,
+    };
+  }
+
   async updateBlogReviwsById(
     id: string,
     reviewId: string,
