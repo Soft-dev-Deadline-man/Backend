@@ -128,7 +128,7 @@ export class BlogService {
       id,
       {
         ...blog,
-        seperateRating: blog.separateRating,
+        separateRating: blog.separateRating,
       },
       {
         new: true,
