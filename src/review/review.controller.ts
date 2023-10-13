@@ -52,6 +52,11 @@ export class ReviewController {
     );
   }
 
+  @Get('/get-review-by-blog-id/:id')
+  async getReviewsByBlogId(@Param('id') blogId: string) {
+    return await this.reviewService.findAllbyBlogId(blogId);
+  }
+
   @Post()
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
