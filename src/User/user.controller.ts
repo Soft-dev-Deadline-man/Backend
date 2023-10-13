@@ -16,12 +16,10 @@ import {
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from './common/decorator/user.decorator';
-import { AuthGuard } from '@nestjs/passport';
 import { ChangeUserProfileDto } from './dto/update-user-profile.dto';
 
 @ApiTags('users')
 @Controller('users')
-@ApiBearerAuth()
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -60,19 +58,20 @@ export class UserController {
   }
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async createNewUser(@Body() user: CreateUserDto): Promise<User> {
     return await this.userService.create(user);
   }
 
   @Get(':id')
-  @UseGuards(AuthGuard('jwt'))
   async getUser(@Param('id') id: string): Promise<User> {
     return await this.userService.findById(id);
   }
 
   @Post()
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async changePassword(
     @Param('id') id: string,
     @Body() changePasswordDto: ChangePasswordDto,
@@ -84,7 +83,8 @@ export class UserController {
   }
 
   @Put(':id')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async updateUser(
     @Param('id') id: string,
     @Body() user: UpdateUserDto,
@@ -93,6 +93,8 @@ export class UserController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   async deleteUser(@Param('id') id: string): Promise<User> {
     return await this.userService.deleteById(id);
   }

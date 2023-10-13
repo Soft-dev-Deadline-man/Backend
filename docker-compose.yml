@@ -22,6 +22,7 @@ services:
       - GOOGLE_CLIENT_SECRET
       - JWT_SECRET
       - BCRYPT_SALT_ROUND
+      - DOMAIN_NAME
     ports:
       - '${APP_PORT}:${APP_PORT}'
     networks:
