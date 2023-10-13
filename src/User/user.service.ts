@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import * as mongoose from 'mongoose';
@@ -47,6 +51,55 @@ export class UserService {
     }
 
     return user;
+  }
+
+  async addBookmarkByUserId(userId: string, bookmarkId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    const bookmarkUser = user.bookmark;
+    for (const bookmark in bookmarkUser) {
+      if (bookmark == bookmarkId)
+        throw new BadRequestException('user is already bookmarked this blog');
+    }
+    bookmarkUser.push(bookmarkId);
+
+    await this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        ...user,
+        bookmark: bookmarkUser,
+      },
+      {
+        new: true,
+      },
+    );
+
+    return 'add bookmark successful';
+  }
+
+  async deleteBookmarkByUserId(userId: string, bookmarkId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException('User not found');
+
+    const bookmarkUser = user.bookmark;
+
+    const index = bookmarkUser.indexOf(bookmarkId);
+    if (!index) throw new NotFoundException('User never bookmarks this blog');
+    bookmarkUser.splice(index, 1);
+
+    await this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        ...user,
+        bookmark: bookmarkUser,
+      },
+      {
+        new: true,
+      },
+    );
+
+    return 'delete bookmark successful';
   }
 
   async findByEmailReturnId(email: string): Promise<string> {

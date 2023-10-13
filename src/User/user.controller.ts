@@ -48,6 +48,17 @@ export class UserController {
     return await this.userService.changeUserProfile(id, image.image);
   }
 
+  @Post('add-bookmark/:blogId')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async addBookmark(
+    @CurrentUser() user: User,
+    @Param('blogId') blogId: string,
+  ): Promise<unknown> {
+    const id = await this.userService.findByEmailReturnId(user.email);
+    return await this.userService.addBookmarkByUserId(id, blogId);
+  }
+
   @Post()
   @UseGuards(AuthGuard('jwt'))
   async createNewUser(@Body() user: CreateUserDto): Promise<User> {
