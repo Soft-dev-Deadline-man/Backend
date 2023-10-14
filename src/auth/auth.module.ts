@@ -8,9 +8,12 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { UserSchema } from "src/User/schemas/user.schema";
 import { ConfigService } from "@nestjs/config";
 import { PassportModule } from "@nestjs/passport";
+import { UserService } from "src/User/user.service";
+import { MinioClientModule } from "src/minio-client/minio-client.module";
 
 @Module({
   imports: [
+    MinioClientModule,
     UserModule,
     PassportModule.register({ defaultStrategy: "jwt" }),
     JwtModule.registerAsync({
@@ -23,7 +26,7 @@ import { PassportModule } from "@nestjs/passport";
     MongooseModule.forFeature([{ name: "User", schema: UserSchema }]),
   ],
   controllers: [AuthController],
-  providers: [JwtStrategy, AuthService],
+  providers: [JwtStrategy, AuthService, UserService],
   exports: [AuthService],
 })
 export class AuthModule {}
