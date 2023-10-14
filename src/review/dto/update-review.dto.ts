@@ -3,6 +3,7 @@ import { Transform } from "class-transformer";
 import { IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
 import { BufferedFile } from "src/minio-client/file.model";
 import { EmptyStringToUndefinedPipe } from "../pipe/emptyStringToUndefined.pipe";
+import { StringToArrayStringPipe } from "../pipe/stringToArrayString.pipe";
 
 export class UpdateReviewDto {
   @IsOptional()
@@ -37,11 +38,9 @@ export class UpdateReviewDto {
   readonly rating?: number;
 
   @IsOptional({ each: true })
-  @Transform((value) => {
-    return EmptyStringToUndefinedPipe.transform(value) as string[];
-  })
+  @Transform((value) => StringToArrayStringPipe.transform(value))
   @ApiProperty({ type: "array", items: { type: "string" } })
-  readonly oldImages?: string;
+  readonly oldImages?: string[];
 
   @IsOptional()
   @ApiProperty({ type: "array", items: { type: "string", format: "binary" } })

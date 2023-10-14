@@ -146,7 +146,7 @@ export class ReviewService {
 
     const previousRating = savedReview.rating;
     const newRating = review.rating;
-    let imagesUrl = review.oldImages ? review.oldImages.split(",") : [];
+    let imagesUrl = review.oldImages ? review.oldImages : [];
     if (images.length > 0) {
       imagesUrl = [...imagesUrl, ...(await this.uploadMultipleImage(images))];
     }
