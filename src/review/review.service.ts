@@ -29,7 +29,10 @@ export class ReviewService {
 
   private async uploadMultipleImage(images: BufferedFile[]): Promise<string[]> {
     try {
-      const uploadImages = await this.minioClientService.uploadMultiple(images);
+      const uploadImages = await this.minioClientService.uploadMultiple(
+        images,
+        "reviews/",
+      );
       const imageUrls = uploadImages.map((obj) => obj.url);
       if (imageUrls.length === 0) {
         throw new HttpException(

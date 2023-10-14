@@ -66,6 +66,7 @@ export class MinioClientService {
 
   public async upload(
     file: BufferedFile,
+    folder: string = "",
     bucketName: string = this.bucketName,
   ) {
     // Only allow jpeg and png
@@ -101,10 +102,9 @@ export class MinioClientService {
     );
     const metadata = { "Content-type": file.mimetype };
     const fileName = hashedFileName + extension;
-
     this.client.putObject(
       bucketName,
-      fileName,
+      folder + fileName,
       file.buffer,
       metadata,
       (err) => {
@@ -125,23 +125,28 @@ export class MinioClientService {
               "minio.endpoint",
             )}.${this.configService.get<string>(
               "domain",
-            )}/${this.configService.get<string>("minio.bucket")}/${fileName}`
+            )}/${this.configService.get<string>("minio.bucket")}/${
+              folder + fileName
+            }`
           : // Development
             `http://${this.configService.get<string>(
               "minio.endpoint",
             )}:${this.configService.get<number>(
               "minio.port",
-            )}/${this.configService.get<string>("minio.bucket")}/${fileName}`,
+            )}/${this.configService.get<string>("minio.bucket")}/${
+              folder + fileName
+            }`,
     };
   }
 
   public async uploadMultiple(
     files: BufferedFile[],
+    folder: string = "",
     bucketName: string = this.bucketName as string,
   ) {
     const urls: { url: string }[] = [];
     for (const file of files) {
-      urls.push(await this.upload(file, bucketName));
+      urls.push(await this.upload(file, folder, bucketName));
     }
 
     return urls;

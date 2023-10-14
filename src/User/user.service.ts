@@ -61,7 +61,7 @@ export class UserService {
     const user = await this.userModel.findById(userId);
     if (!user) throw new NotFoundException("User not found");
 
-    var likedReview = user.likedReview;
+    let likedReview = user.likedReview;
     if (!likedReview) likedReview = [];
     for (const review in likedReview) {
       if (review == reviewId)
@@ -87,7 +87,7 @@ export class UserService {
     const user = await this.userModel.findById(userId);
     if (!user) throw new NotFoundException("User not found");
 
-    var likedReview = user.likedReview;
+    let likedReview = user.likedReview;
     if (!likedReview) likedReview = [];
 
     const index = likedReview.indexOf(reviewId);
@@ -176,7 +176,10 @@ export class UserService {
     }
 
     try {
-      const uploaded_image = await this.minioClientService.upload(image);
+      const uploaded_image = await this.minioClientService.upload(
+        image,
+        "profiles/",
+      );
       return await this.userModel.findByIdAndUpdate(
         id,
         {
