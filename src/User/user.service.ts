@@ -166,7 +166,6 @@ export class UserService {
 
     const bookmarkUser = user.bookmark;
 
-    console.log(bookmarkUser + " " + bookmarkId);
     const index = bookmarkUser.indexOf(bookmarkId);
 
     if (index == undefined)

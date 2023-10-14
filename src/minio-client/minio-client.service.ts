@@ -84,11 +84,20 @@ export class MinioClientService {
 
     // Image Width and Height must be more than 400px
     const dimensions = sizeOf(file.buffer as Buffer);
-    if (dimensions.width < 400 || dimensions.height < 400) {
-      throw new HttpException(
-        "Image dimensions too small",
-        HttpStatus.BAD_REQUEST,
-      );
+    if (folder === "profiles/") {
+      if (dimensions.width > 400 || dimensions.height > 400) {
+        throw new HttpException(
+          "Image dimensions too large for profile image.",
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    } else {
+      if (dimensions.width < 400 || dimensions.height < 400) {
+        throw new HttpException(
+          "Image dimensions too small for review or blog image.",
+          HttpStatus.BAD_REQUEST,
+        );
+      }
     }
 
     const timestamp = Date.now().toString();

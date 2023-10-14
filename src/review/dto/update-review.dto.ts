@@ -1,33 +1,49 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsNumber, IsString, Max, Min } from "class-validator";
+import { Transform } from "class-transformer";
+import { IsNumber, IsOptional, IsString, Max, Min } from "class-validator";
 import { BufferedFile } from "src/minio-client/file.model";
+import { EmptyStringToUndefinedPipe } from "../pipe/emptyStringToUndefined.pipe";
 
 export class UpdateReviewDto {
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  readonly blogId: string;
+  @Transform((value) => EmptyStringToUndefinedPipe.transform(value))
+  readonly title?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  readonly title: string;
+  @Transform((value) => EmptyStringToUndefinedPipe.transform(value))
+  readonly description?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  readonly description: string;
+  @Transform((value) => EmptyStringToUndefinedPipe.transform(value))
+  readonly recommendActivity?: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  readonly recommendActivity: string;
+  @Transform((value) => EmptyStringToUndefinedPipe.transform(value))
+  readonly spendTime?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  readonly spendTime: string;
-
+  @IsOptional()
   @IsNumber()
   @Min(1)
   @Max(5)
-  readonly rating: number;
+  @Transform((value) => {
+    return EmptyStringToUndefinedPipe.transform(value)
+      ? (parseInt(EmptyStringToUndefinedPipe.transform(value)) as number)
+      : undefined;
+  })
+  readonly rating?: number;
 
+  @IsOptional({ each: true })
+  @Transform((value) => {
+    return EmptyStringToUndefinedPipe.transform(value) as string[];
+  })
+  @ApiProperty({ type: "array", items: { type: "string" } })
+  readonly oldImages?: string;
+
+  @IsOptional()
   @ApiProperty({ type: "array", items: { type: "string", format: "binary" } })
-  readonly images: BufferedFile[];
+  readonly images?: BufferedFile[];
 }

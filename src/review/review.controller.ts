@@ -133,9 +133,9 @@ export class ReviewController {
   async updateReview(
     @UploadedFiles() images: BufferedFile[],
     @Param("id") id: string,
-    @Body() review: UpdateReviewDto,
+    @Body()
+    review: UpdateReviewDto,
   ): Promise<Review> {
-    console.log(images);
     return await this.reviewService.updateById(id, review, images);
   }
 

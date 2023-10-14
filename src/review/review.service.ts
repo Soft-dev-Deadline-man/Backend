@@ -36,7 +36,7 @@ export class ReviewService {
       const imageUrls = uploadImages.map((obj) => obj.url);
       if (imageUrls.length === 0) {
         throw new HttpException(
-          "Not image were uploaded",
+          "No image were uploaded",
           HttpStatus.BAD_REQUEST,
         );
       } else {
@@ -87,9 +87,18 @@ export class ReviewService {
     if (!userId) {
       throw new NotAcceptableException("Not Login");
     }
-    let imageUrls = [""];
-    if (images) {
-      imageUrls = await this.uploadMultipleImage(images);
+    try {
+      const blogFound = await this.blogService.findById(createReviewDto.blogId);
+      if (!blogFound) {
+        throw new NotAcceptableException("No blog found.");
+      }
+    } catch (err) {
+      throw new NotAcceptableException("No blog found");
+    }
+
+    const imageUrls = [];
+    if (images.length > 0) {
+      await this.uploadMultipleImage(images);
     }
 
     const review: Review = {
@@ -118,7 +127,6 @@ export class ReviewService {
 
   async findIdByRefId(refId: string | undefined) {
     const review = await this.reviewModel.findOne({ refToId: refId });
-    // console.log("review : " + review);
     if (!review) {
       return "";
     }
@@ -138,9 +146,10 @@ export class ReviewService {
 
     const previousRating = savedReview.rating;
     const newRating = review.rating;
-
-    savedReview.images = await this.uploadMultipleImage(images);
-
+    let imagesUrl = review.oldImages ? review.oldImages.split(",") : [];
+    if (images.length > 0) {
+      imagesUrl = [...imagesUrl, ...(await this.uploadMultipleImage(images))];
+    }
     if (newRating && previousRating !== newRating) {
       await this.blogService.deleteBlogSeparateRatingById(
         savedReview.blogId,
@@ -153,10 +162,14 @@ export class ReviewService {
     }
 
     return (await this.reviewModel
-      .findByIdAndUpdate({ _id: id }, review, {
-        new: true,
-        runValidators: true,
-      })
+      .findByIdAndUpdate(
+        { _id: id },
+        { ...review, images: imagesUrl },
+        {
+          new: true,
+          runValidators: true,
+        },
+      )
       .exec()) as Review;
   }
 
