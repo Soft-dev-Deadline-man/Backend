@@ -91,7 +91,8 @@ export class UserService {
     if (!likedReview) likedReview = [];
 
     const index = likedReview.indexOf(reviewId);
-    if (!index) throw new NotFoundException("User never like this review");
+    if (index == undefined)
+      throw new NotFoundException("User never like this review");
     likedReview.splice(index, 1);
 
     await this.userModel.findByIdAndUpdate(
@@ -139,8 +140,11 @@ export class UserService {
 
     const bookmarkUser = user.bookmark;
 
+    console.log(bookmarkUser + " " + bookmarkId);
     const index = bookmarkUser.indexOf(bookmarkId);
-    if (!index) throw new NotFoundException("User never bookmarks this blog");
+    console.log(index);
+    if (index == undefined)
+      throw new NotFoundException("User never bookmarks this blog");
     bookmarkUser.splice(index, 1);
 
     await this.userModel.findByIdAndUpdate(
