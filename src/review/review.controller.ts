@@ -105,14 +105,14 @@ export class ReviewController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Post("/vote-up/:id")
+  @Post("/like/:id")
   async voteUpReview(@CurrentUser() user: User, @Param("id") reviewId: string) {
     return await this.reviewService.voteReview(reviewId, "up");
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Post("/vote-down/:id")
+  @Post("/dislike/:id")
   async voteDownReview(
     @CurrentUser() user: User,
     @Param("id") reviewId: string,
