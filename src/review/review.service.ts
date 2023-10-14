@@ -56,12 +56,14 @@ export class ReviewService {
     createReviewDto: CreateReviewDto,
     images: BufferedFile[],
   ): Promise<Review> {
-    const userId =
-      await this.userService.findByEmailReturnId("yuuka@email.com");
+    const userId = await this.userService.findByEmailReturnId(user.email);
     if (!userId) {
       throw new NotAcceptableException("Not Login");
     }
-    const imageUrls = await this.uploadMultipleImage(images);
+    var imageUrls = [""];
+    if (images) {
+      imageUrls = await this.uploadMultipleImage(images);
+    }
 
     const review: Review = {
       blogId: createReviewDto.blogId,
@@ -85,6 +87,16 @@ export class ReviewService {
     await this.blogService.calculateOverallRating(review.blogId);
 
     return reviewSaved.save();
+  }
+
+  async findIdByRefId(refId: string | undefined) {
+    const review = await this.reviewModel.findOne({ refToId: refId });
+    console.log("review : " + review);
+    if (!review) {
+      return "";
+    }
+
+    return review.id;
   }
 
   async updateById(

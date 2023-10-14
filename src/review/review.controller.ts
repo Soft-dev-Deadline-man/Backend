@@ -39,6 +39,7 @@ export class ReviewController {
       reviews.map(async (review) => {
         const returnReviewDto = new ReturnReviewDto();
         const user: User = await this.userService.findById(review.authorId);
+
         returnReviewDto.blogId = review.blogId;
         returnReviewDto.title = review.title;
         returnReviewDto.description = review.description;
@@ -65,6 +66,9 @@ export class ReviewController {
       reviews.map(async (review) => {
         const returnReviewDto = new ReturnReviewDto();
         const user: User = await this.userService.findById(review.authorId);
+        const reviewId = await this.reviewService.findIdByRefId(review.refToId);
+
+        returnReviewDto.id = reviewId;
         returnReviewDto.blogId = review.blogId;
         returnReviewDto.title = review.title;
         returnReviewDto.description = review.description;

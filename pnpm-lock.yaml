@@ -97,6 +97,9 @@ devDependencies:
   '@types/supertest':
     specifier: ^2.0.14
     version: 2.0.14
+  '@types/uuid':
+    specifier: ^9.0.5
+    version: 9.0.5
   '@typescript-eslint/eslint-plugin':
     specifier: ^6.7.4
     version: 6.7.4(@typescript-eslint/parser@6.7.4)(eslint@8.50.0)(typescript@5.2.2)
@@ -1444,6 +1447,10 @@ packages:
     resolution: {integrity: sha512-Q900DeeHNFF3ZYYepf/EyJfZDA2JrnWLaSQ0YNV7+2GTo8IlJzauEnDGhya+hauncpBYTYGpVHwGdssJeAQ7eA==}
     dependencies:
       '@types/superagent': 4.1.19
+    dev: true
+
+  /@types/uuid@9.0.5:
+    resolution: {integrity: sha512-xfHdwa1FMJ082prjSJpoEI57GZITiQz10r3vEJCHa2khEFQjKy91aWKz6+zybzssCvXUwE1LQWgWVwZ4nYUvHQ==}
     dev: true
 
   /@types/validator@13.11.2:
