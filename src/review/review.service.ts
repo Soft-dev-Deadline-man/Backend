@@ -52,7 +52,7 @@ export class ReviewService {
     return await this.reviewModel.find({ blogId: blogId }).exec();
   }
 
-  async voteReview(reviewId: string, action: string) {
+  async voteReview(userId: string, reviewId: string, action: string) {
     const review = await this.reviewModel.findById(reviewId);
     if (!review) throw new BadRequestException("not found this review-id");
 
@@ -61,8 +61,10 @@ export class ReviewService {
 
     if (action == "up") {
       vote += 1;
+      this.userService.likeReviewByUserId(userId, reviewId);
     } else if (action == "down") {
       vote -= 1;
+      this.userService.unLikeReviewByUserId(userId, reviewId);
     } else {
       throw new BadRequestException("vote-up or vote-down only");
     }

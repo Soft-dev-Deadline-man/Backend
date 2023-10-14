@@ -57,6 +57,57 @@ export class UserService {
     return user;
   }
 
+  async likeReviewByUserId(userId: string, reviewId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException("User not found");
+
+    var likedReview = user.likedReview;
+    if (!likedReview) likedReview = [];
+    for (const review in likedReview) {
+      if (review == reviewId)
+        throw new BadRequestException("user is already liked this blog");
+    }
+    likedReview.push(reviewId);
+
+    await this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        ...user,
+        likedReview: likedReview,
+      },
+      {
+        new: true,
+      },
+    );
+
+    return "like blog successful";
+  }
+
+  async unLikeReviewByUserId(userId: string, reviewId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException("User not found");
+
+    var likedReview = user.likedReview;
+    if (!likedReview) likedReview = [];
+
+    const index = likedReview.indexOf(reviewId);
+    if (!index) throw new NotFoundException("User never like this review");
+    likedReview.splice(index, 1);
+
+    await this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        ...user,
+        likedReview: likedReview,
+      },
+      {
+        new: true,
+      },
+    );
+
+    return "unlike blog successful";
+  }
+
   async addBookmarkByUserId(userId: string, bookmarkId: string) {
     const user = await this.userModel.findById(userId);
     if (!user) throw new NotFoundException("User not found");

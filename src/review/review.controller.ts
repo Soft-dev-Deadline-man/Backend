@@ -107,7 +107,8 @@ export class ReviewController {
   @UseGuards(JwtAuthGuard)
   @Post("/like/:id")
   async voteUpReview(@CurrentUser() user: User, @Param("id") reviewId: string) {
-    return await this.reviewService.voteReview(reviewId, "up");
+    const userId = await this.userService.findByEmailReturnId(user.email);
+    return await this.reviewService.voteReview(userId, reviewId, "up");
   }
 
   @ApiBearerAuth()
@@ -117,7 +118,8 @@ export class ReviewController {
     @CurrentUser() user: User,
     @Param("id") reviewId: string,
   ) {
-    return await this.reviewService.voteReview(reviewId, "down");
+    const userId = await this.userService.findByEmailReturnId(user.email);
+    return await this.reviewService.voteReview(userId, reviewId, "down");
   }
 
   @Patch(":id")
