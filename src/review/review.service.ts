@@ -118,7 +118,7 @@ export class ReviewService {
 
   async findIdByRefId(refId: string | undefined) {
     const review = await this.reviewModel.findOne({ refToId: refId });
-    console.log("review : " + review);
+    // console.log("review : " + review);
     if (!review) {
       return "";
     }
