@@ -109,6 +109,7 @@ export class ReviewService {
       reviewSaved.rating,
     );
     await this.blogService.calculateOverallRating(review.blogId);
+    await this.userService.addPostedReviewByuserId(userId, reviewSaved.id);
 
     return reviewSaved.save();
   }
@@ -172,6 +173,11 @@ export class ReviewService {
       reviewSaved.rating,
     );
     await this.blogService.calculateOverallRating(reviewSaved.blogId);
+    await this.userService.addPostedReviewByuserId(
+      reviewSaved.authorId,
+      reviewSaved.id,
+    );
+
     return (await this.reviewModel.findByIdAndDelete(id).exec()) as Review;
   }
 }
