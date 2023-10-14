@@ -118,24 +118,11 @@ export class MinioClientService {
       },
     );
     return {
-      url:
-        this.configService.get<string>("minio.endpoint") === "minio"
-          ? // Production
-            `https://${this.configService.get<string>(
-              "minio.endpoint",
-            )}.${this.configService.get<string>(
-              "domain",
-            )}/${this.configService.get<string>("minio.bucket")}/${
-              folder + fileName
-            }`
-          : // Development
-            `http://${this.configService.get<string>(
-              "minio.endpoint",
-            )}:${this.configService.get<number>(
-              "minio.port",
-            )}/${this.configService.get<string>("minio.bucket")}/${
-              folder + fileName
-            }`,
+      url: `https://minio.${this.configService.get<string>(
+        "domain",
+      )}/${this.configService.get<string>("minio.bucket")}/${
+        folder + fileName
+      }`,
     };
   }
 
