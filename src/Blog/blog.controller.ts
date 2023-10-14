@@ -24,6 +24,11 @@ export class BlogController {
     return await this.blogService.findAll();
   }
 
+  @Get("/all-data")
+  async getAllBlogsWithAllData() {
+    return await this.blogService.findAllwithAllData();
+  }
+
   @Post()
   async createNewBlog(@Body() blog: CreateBlogDto): Promise<Blog> {
     return await this.blogService.create(blog);

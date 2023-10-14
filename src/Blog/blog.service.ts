@@ -40,6 +40,32 @@ export class BlogService {
     }));
   }
 
+  async findAllwithAllData(): Promise<BlogAllDatadto[]> {
+    const blogs = await this.blogModel.find().populate("reviews").exec();
+    blogs.forEach((blog) => {
+      if (blog.reviews === null) {
+        blog.reviewLength = 0;
+      } else {
+        blog.reviewLength = blog.reviews.length;
+      }
+      if (blog.images === null) {
+        blog.images = [];
+      }
+    });
+    return blogs.map((blog) => ({
+      _id: blog._id,
+      title: blog.title,
+      category: blog.category,
+      rating: blog.rating,
+      latidude: blog.latitude,
+      longtitude: blog.longitude,
+      reviewLength: blog.reviewLength,
+      address: blog.address,
+      openTime: blog.openTime,
+      firstImage: blog.images.length > 0 ? blog.images[0] : null,
+    }));
+  }
+
   async create(blog: CreateBlogDto): Promise<Blog> {
     return await this.blogModel.create(blog);
   }
