@@ -29,7 +29,7 @@ export class Review {
   @Prop()
   rating: number;
 
-  @Prop()
+  @Prop({ default: 0 })
   score?: number; // vote-up, vote-down
 
   @Prop()

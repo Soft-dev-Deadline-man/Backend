@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Injectable,
@@ -51,6 +52,33 @@ export class ReviewService {
     return await this.reviewModel.find({ blogId: blogId }).exec();
   }
 
+  async voteReview(reviewId: string, action: string) {
+    const review = await this.reviewModel.findById(reviewId);
+    if (!review) throw new BadRequestException("not found this review-id");
+
+    let vote = review.score;
+    if (vote == undefined) vote = 0;
+
+    if (action == "up") {
+      vote += 1;
+    } else if (action == "down") {
+      vote -= 1;
+    } else {
+      throw new BadRequestException("vote-up or vote-down only");
+    }
+
+    await this.reviewModel.findByIdAndUpdate(
+      reviewId,
+      {
+        ...review,
+        score: vote,
+      },
+      { new: true },
+    );
+
+    return "vote successful";
+  }
+
   async create(
     user: User,
     createReviewDto: CreateReviewDto,
@@ -60,7 +88,7 @@ export class ReviewService {
     if (!userId) {
       throw new NotAcceptableException("Not Login");
     }
-    var imageUrls = [""];
+    let imageUrls = [""];
     if (images) {
       imageUrls = await this.uploadMultipleImage(images);
     }

@@ -100,8 +100,24 @@ export class ReviewController {
     @CurrentUser() user: User,
     @Body() createReviewDto: CreateReviewDto,
   ): Promise<Review> {
-    console.log("Files", images);
     return await this.reviewService.create(user, createReviewDto, images);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post("/vote-up/:id")
+  async voteUpReview(@CurrentUser() user: User, @Param("id") reviewId: string) {
+    return await this.reviewService.voteReview(reviewId, "up");
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post("/vote-down/:id")
+  async voteDownReview(
+    @CurrentUser() user: User,
+    @Param("id") reviewId: string,
+  ) {
+    return await this.reviewService.voteReview(reviewId, "down");
   }
 
   @Patch(":id")
