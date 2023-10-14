@@ -99,8 +99,7 @@ export class ReviewService {
       rating: createReviewDto.rating,
       images: imageUrls,
     };
-
-    this.blogService.updateImageById(review.blogId, review.images);
+    await this.blogService.updateImageById(review.blogId, review.images);
 
     const reviewSaved = await this.reviewModel.create(review);
     await this.blogService.updateBlogReviwsById(review.blogId, reviewSaved.id);

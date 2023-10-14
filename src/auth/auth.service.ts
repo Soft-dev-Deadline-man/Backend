@@ -104,17 +104,12 @@ export class AuthService {
       audience: this.configService.get("oauth.id"),
     });
 
-    const {
-      email = "",
-      name = "",
-      family_name = "",
-      picture = "",
-    } = ticket.getPayload() || {};
+    const { email = "", name = "", picture = "" } = ticket.getPayload() || {};
     const user = await this.userService.findByEmail(email);
     if (!user) {
       const newUser = new this.userModel({
         email: email,
-        name: name + " " + family_name,
+        name: name,
         profile: picture,
       });
       await newUser.save();
