@@ -39,6 +39,9 @@ export class User {
   bookmark: string[];
 
   @Prop()
+  likedReview?: string[];
+
+  @Prop()
   postedBlogs: string[];
 }
 

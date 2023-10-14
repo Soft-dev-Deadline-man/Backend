@@ -12,7 +12,7 @@ import { BlogService } from "./blog.service";
 import { Blog } from "./schemas/blog.schema";
 import { CreateBlogDto } from "./dto/create-blog.dto";
 import { UpdateBlogDto } from "./dto/update-blog.dto";
-import { BlogSummaryDto } from "./dto/get-blog.dto";
+import { BlogAllDatadto, BlogSummaryDto } from "./dto/get-blog.dto";
 
 @ApiTags("blogs")
 @Controller("blogs")
@@ -22,6 +22,11 @@ export class BlogController {
   @Get()
   async getAllBlogs() {
     return await this.blogService.findAll();
+  }
+
+  @Get("/all-data")
+  async getAllBlogsWithAllData() {
+    return await this.blogService.findAllwithAllData();
   }
 
   @Post()
@@ -37,6 +42,11 @@ export class BlogController {
   @Get("/brief/:id")
   async getBriefBlogById(@Param("id") id: string): Promise<BlogSummaryDto> {
     return await this.blogService.findBriefBlogById(id);
+  }
+
+  @Get("/all-data/:id")
+  async getAllDataBlogById(@Param("id") id: string): Promise<BlogAllDatadto> {
+    return await this.blogService.findAllDataBlogById(id);
   }
 
   @Put(":id")

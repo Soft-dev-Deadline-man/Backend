@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotAcceptableException,
   NotFoundException,
@@ -84,6 +85,16 @@ export class ReviewService {
       .exec()) as Review;
   }
 
+  async findIdByRefId(refId: string | undefined) {
+    const review = await this.reviewModel.findOne({ refToId: refId });
+    console.log("review : " + review);
+    if (!review) {
+      return "";
+    }
+
+    return review.id;
+  }
+
   async deleteById(id: string): Promise<Review> {
     const reviewSaved = await this.reviewModel.findById(id);
     if (!reviewSaved) {
@@ -100,5 +111,34 @@ export class ReviewService {
     );
     await this.blogService.calculateOverallRating(reviewSaved.blogId);
     return (await this.reviewModel.findByIdAndDelete(id).exec()) as Review;
+  }
+
+  async voteReview(userId: string, reviewId: string, action: string) {
+    const review = await this.reviewModel.findById(reviewId);
+    if (!review) throw new BadRequestException("not found this review-id");
+
+    let vote = review.score;
+    if (vote == undefined) vote = 0;
+
+    if (action == "up") {
+      vote += 1;
+      this.userService.likeReviewByUserId(userId, reviewId);
+    } else if (action == "down") {
+      vote -= 1;
+      this.userService.unLikeReviewByUserId(userId, reviewId);
+    } else {
+      throw new BadRequestException("vote-up or vote-down only");
+    }
+
+    await this.reviewModel.findByIdAndUpdate(
+      reviewId,
+      {
+        ...review,
+        score: vote,
+      },
+      { new: true },
+    );
+
+    return "vote successful";
   }
 }

@@ -32,6 +32,9 @@ dependencies:
   '@types/bcrypt':
     specifier: ^5.0.0
     version: 5.0.0
+  '@types/uuid':
+    specifier: ^9.0.5
+    version: 9.0.5
   bcrypt:
     specifier: ^5.1.1
     version: 5.1.1
@@ -71,6 +74,9 @@ dependencies:
   rxjs:
     specifier: ^7.8.1
     version: 7.8.1
+  uuid:
+    specifier: ^9.0.1
+    version: 9.0.1
 
 devDependencies:
   '@nestjs/cli':
@@ -1445,6 +1451,10 @@ packages:
     dependencies:
       '@types/superagent': 4.1.19
     dev: true
+
+  /@types/uuid@9.0.5:
+    resolution: {integrity: sha512-xfHdwa1FMJ082prjSJpoEI57GZITiQz10r3vEJCHa2khEFQjKy91aWKz6+zybzssCvXUwE1LQWgWVwZ4nYUvHQ==}
+    dev: false
 
   /@types/validator@13.11.2:
     resolution: {integrity: sha512-nIKVVQKT6kGKysnNt+xLobr+pFJNssJRi2s034wgWeFBUx01fI8BeHTW2TcRp7VcFu9QCYG8IlChTuovcm0oKQ==}
@@ -6155,6 +6165,11 @@ packages:
 
   /uuid@9.0.0:
     resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
+    hasBin: true
+    dev: false
+
+  /uuid@9.0.1:
+    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
     hasBin: true
     dev: false
 

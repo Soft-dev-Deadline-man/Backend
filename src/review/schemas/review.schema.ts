@@ -1,7 +1,13 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { v4 as uuidv4 } from "uuid";
 
 @Schema({ timestamps: true })
 export class Review {
+  @Prop({
+    default: uuidv4(),
+  })
+  refToId?: string;
+
   @Prop()
   blogId: string;
 
@@ -23,7 +29,7 @@ export class Review {
   @Prop()
   rating: number;
 
-  @Prop()
+  @Prop({ default: 0 })
   score?: number; // vote-up, vote-down
 
   @Prop()

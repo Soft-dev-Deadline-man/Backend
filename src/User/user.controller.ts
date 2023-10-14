@@ -43,7 +43,7 @@ export class UserController {
     @Body() image: ChangeUserProfileDto,
   ): Promise<unknown> {
     const id = await this.userService.findByEmailReturnId(user.email);
-    return await this.userService.changeUserProfile(id, image.image);
+    return await this.userService.changeUserProfile(id, image);
   }
 
   @Post("add-bookmark/:blogId")

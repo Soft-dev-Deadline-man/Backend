@@ -35,6 +35,7 @@ export class ReviewController {
       reviews.map(async (review) => {
         const returnReviewDto = new ReturnReviewDto();
         const user: User = await this.userService.findById(review.authorId);
+
         returnReviewDto.blogId = review.blogId;
         returnReviewDto.title = review.title;
         returnReviewDto.description = review.description;
@@ -61,6 +62,7 @@ export class ReviewController {
       reviews.map(async (review) => {
         const returnReviewDto = new ReturnReviewDto();
         const user: User = await this.userService.findById(review.authorId);
+
         returnReviewDto.blogId = review.blogId;
         returnReviewDto.title = review.title;
         returnReviewDto.description = review.description;
@@ -104,5 +106,24 @@ export class ReviewController {
   @UseGuards(JwtAuthGuard)
   async deleteReview(@Param("id") id: string): Promise<Review> {
     return await this.reviewService.deleteById(id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post("/like/:id")
+  async voteUpReview(@CurrentUser() user: User, @Param("id") reviewId: string) {
+    const userId = await this.userService.findByEmailReturnId(user.email);
+    return await this.reviewService.voteReview(userId, reviewId, "up");
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post("/dislike/:id")
+  async voteDownReview(
+    @CurrentUser() user: User,
+    @Param("id") reviewId: string,
+  ) {
+    const userId = await this.userService.findByEmailReturnId(user.email);
+    return await this.reviewService.voteReview(userId, reviewId, "down");
   }
 }

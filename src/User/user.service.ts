@@ -8,6 +8,7 @@ import { User } from "./schemas/user.schema";
 import * as mongoose from "mongoose";
 import * as bcrypt from "bcrypt";
 import { ConfigService } from "@nestjs/config";
+import { ChangeUserProfileDto } from "./dto/update-user-profile.dto";
 
 @Injectable()
 export class UserService {
@@ -85,7 +86,8 @@ export class UserService {
     const bookmarkUser = user.bookmark;
 
     const index = bookmarkUser.indexOf(bookmarkId);
-    if (!index) throw new NotFoundException("User never bookmarks this blog");
+    if (index == undefined)
+      throw new NotFoundException("User never bookmarks this blog");
     bookmarkUser.splice(index, 1);
 
     await this.userModel.findByIdAndUpdate(
@@ -110,7 +112,7 @@ export class UserService {
     return user.id;
   }
 
-  async changeUserProfile(id: string, image: string) {
+  async changeUserProfile(id: string, { image }: ChangeUserProfileDto) {
     const user = this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException("User not found");
@@ -163,5 +165,57 @@ export class UserService {
 
   async deleteById(id: string): Promise<User> {
     return (await this.userModel.findByIdAndDelete(id).exec()) as User;
+  }
+
+  async likeReviewByUserId(userId: string, reviewId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException("User not found");
+
+    let likedReview = user.likedReview;
+    if (!likedReview) likedReview = [];
+    for (const review in likedReview) {
+      if (review == reviewId)
+        throw new BadRequestException("user is already liked this blog");
+    }
+    likedReview.push(reviewId);
+
+    await this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        ...user,
+        likedReview: likedReview,
+      },
+      {
+        new: true,
+      },
+    );
+
+    return "like blog successful";
+  }
+
+  async unLikeReviewByUserId(userId: string, reviewId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException("User not found");
+
+    let likedReview = user.likedReview;
+    if (!likedReview) likedReview = [];
+
+    const index = likedReview.indexOf(reviewId);
+    if (index == undefined)
+      throw new NotFoundException("User never like this review");
+    likedReview.splice(index, 1);
+
+    await this.userModel.findByIdAndUpdate(
+      userId,
+      {
+        ...user,
+        likedReview: likedReview,
+      },
+      {
+        new: true,
+      },
+    );
+
+    return "unlike blog successful";
   }
 }
