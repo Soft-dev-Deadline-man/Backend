@@ -109,6 +109,32 @@ export class UserService {
     return "unlike blog successful";
   }
 
+  async addPostedReviewByuserId(userId: string, reviewId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException("User not found");
+
+    const postedReview = user.postedBlogs;
+    const index = postedReview.indexOf(reviewId);
+    if (index != undefined) user.postedBlogs.push(reviewId);
+    await user.save();
+
+    return "add successful";
+  }
+
+  async deletePostedReviewByuserId(userId: string, reviewId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) throw new NotFoundException("User not found");
+
+    const postedReview = user.postedBlogs;
+    const index = postedReview.indexOf(reviewId);
+    if (index == undefined)
+      throw new NotFoundException("User never posts this blog");
+    user.postedBlogs.splice(index, 1);
+    await user.save();
+
+    return "delete successful";
+  }
+
   async addBookmarkByUserId(userId: string, bookmarkId: string) {
     const user = await this.userModel.findById(userId);
     if (!user) throw new NotFoundException("User not found");
@@ -142,7 +168,7 @@ export class UserService {
 
     console.log(bookmarkUser + " " + bookmarkId);
     const index = bookmarkUser.indexOf(bookmarkId);
-    console.log(index);
+
     if (index == undefined)
       throw new NotFoundException("User never bookmarks this blog");
     bookmarkUser.splice(index, 1);
