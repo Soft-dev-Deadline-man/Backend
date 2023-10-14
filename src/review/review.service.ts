@@ -69,14 +69,8 @@ export class ReviewService {
       throw new BadRequestException("vote-up or vote-down only");
     }
 
-    await this.reviewModel.findByIdAndUpdate(
-      reviewId,
-      {
-        ...review,
-        score: vote,
-      },
-      { new: true },
-    );
+    review.score = vote;
+    await review.save();
 
     return "vote successful";
   }
