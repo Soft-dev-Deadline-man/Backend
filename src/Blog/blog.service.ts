@@ -6,7 +6,7 @@ import {
 import { InjectModel } from "@nestjs/mongoose";
 import { Blog } from "./schemas/blog.schema";
 import mongoose from "mongoose";
-import { BlogSummaryDto } from "./dto/get-blog.dto";
+import { BlogAllDatadto, BlogSummaryDto } from "./dto/get-blog.dto";
 import { CreateBlogDto } from "./dto/create-blog.dto";
 
 @Injectable()
@@ -66,6 +66,27 @@ export class BlogService {
       title: blog.title,
       category: blog.category,
       rating: blog.rating,
+      reviewLength: blog.reviewLength,
+      address: blog.address,
+      openTime: blog.openTime,
+      firstImage: blog.images.length > 0 ? blog.images[0] : null,
+    };
+  }
+
+  async findAllDataBlogById(id: string): Promise<BlogAllDatadto> {
+    const blog = await this.blogModel.findById(id).exec();
+    if (!blog) {
+      throw new NotFoundException("Blog not found");
+    }
+    blog.reviewLength = blog.reviews ? blog.reviews.length : 0;
+    blog.images = blog.images || [];
+    return {
+      _id: blog._id,
+      title: blog.title,
+      category: blog.category,
+      rating: blog.rating,
+      latidude: blog.latitude,
+      longtitude: blog.longitude,
       reviewLength: blog.reviewLength,
       address: blog.address,
       openTime: blog.openTime,
