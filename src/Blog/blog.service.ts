@@ -268,36 +268,21 @@ export class BlogService {
     if (!blog) {
       throw new NotFoundException("Blog not found");
     }
+    images?.forEach((inputImg) => {
+      // console.log(inputImg);
+      blog.images.push(inputImg);
+    });
 
-    let isUpdated = false;
-    for (const inputImg in images) {
-      let isSaved = false;
-      for (const imageInDB in blog.images) {
-        if (inputImg == imageInDB) {
-          isSaved = true;
-          break;
-        }
-      }
-      if (!isSaved) {
-        isUpdated = true;
-        blog.images.push(inputImg);
-      }
-    }
-
-    if (isUpdated) {
-      return await this.blogModel.findByIdAndUpdate(
-        id,
-        {
-          ...blog,
-          images: blog.images,
-        },
-        {
-          new: true,
-        },
-      );
-    }
-
-    return blog;
+    return await this.blogModel.findByIdAndUpdate(
+      id,
+      {
+        ...blog,
+        images: blog.images,
+      },
+      {
+        new: true,
+      },
+    );
   }
 
   async updateById(id: string, blog: Blog): Promise<Blog> {
