@@ -39,6 +39,14 @@ export class UserController {
     return await this.userService.findByEmail(user.email);
   }
 
+  @Get("/get/bookmark")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async getBookmarksByUserId(@CurrentUser() user: User) {
+    const userId = await this.userService.findByEmailReturnId(user.email);
+    return await this.userService.getBookmarkByUserId(userId);
+  }
+
   @Post("upload/image")
   @UseInterceptors(FileInterceptor("image"))
   @ApiConsumes("multipart/form-data")

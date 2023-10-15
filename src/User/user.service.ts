@@ -57,6 +57,15 @@ export class UserService {
     return user;
   }
 
+  async getBookmarkByUserId(userId: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    return user.bookmark;
+  }
+
   async likeReviewByUserId(userId: string, reviewId: string) {
     const user = await this.userModel.findById(userId);
     if (!user) throw new NotFoundException("User not found");
