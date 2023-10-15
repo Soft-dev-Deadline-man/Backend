@@ -3,6 +3,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  HttpStatus,
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { User } from "./schemas/user.schema";
@@ -244,13 +245,7 @@ export class UserService {
         },
       );
     } catch (err) {
-      return {
-        status:
-          err instanceof HttpException
-            ? err.message
-            : "Unknown error encountered",
-        message: "Profile image uploaded failed.",
-      };
+      throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     }
   }
 
