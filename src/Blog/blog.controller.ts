@@ -41,9 +41,10 @@ export class BlogController {
 
   @Post()
   @ApiBearerAuth()
-  @UserRoleGuard(UserRole.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  // @UserRoleGuard(UserRole.ADMIN)
+  // @UseGuards(JwtAuthGuard, RolesGuard)
   async createNewBlog(@Body() blog: CreateBlogDto): Promise<Blog> {
+    console.log(blog);
     return await this.blogService.create(blog);
   }
 
