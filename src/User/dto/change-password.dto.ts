@@ -2,5 +2,7 @@ import { IsString } from "class-validator";
 
 export class ChangePasswordDto {
   @IsString()
-  readonly password: string;
+  readonly oldPassword: string;
+  @IsString()
+  readonly newPassword: string;
 }

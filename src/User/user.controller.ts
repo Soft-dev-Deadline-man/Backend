@@ -1,6 +1,6 @@
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from "@nestjs/swagger";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
+import { UpdateNameAndBioDto, UpdateUserDto } from "./dto/update-user.dto";
 import { User } from "./schemas/user.schema";
 import { UserService } from "./user.service";
 import {
@@ -37,6 +37,23 @@ export class UserController {
   @ApiBearerAuth()
   async getMe(@CurrentUser() user: User) {
     return await this.userService.findByEmail(user.email);
+  }
+
+  @Get("/get/bookmark/:userId")
+  async getBookmarksByUserId(@Param("userId") userId: string) {
+    return await this.userService.getBookmarkByUserId(userId);
+  }
+
+  @Post("update/name-bio/:userId")
+  async updateNameAndBio(
+    @Param("userId") userId: string,
+    @Body() updateDto: UpdateNameAndBioDto,
+  ) {
+    return await this.userService.updateNameAndBioByUserId(
+      userId,
+      updateDto.name,
+      updateDto.bio,
+    );
   }
 
   @Post("upload/image")
@@ -98,7 +115,8 @@ export class UserController {
   ): Promise<User | unknown> {
     return await this.userService.findByIdAndChangePassword(
       id,
-      changePasswordDto.password,
+      changePasswordDto.oldPassword,
+      changePasswordDto.newPassword,
     );
   }
 
