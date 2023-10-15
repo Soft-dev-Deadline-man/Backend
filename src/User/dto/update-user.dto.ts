@@ -10,3 +10,8 @@ export class UpdateUserDto {
   readonly bookmark: string[];
   readonly postedBlogs: string[];
 }
+
+export class UpdateNameAndBioDto {
+  readonly name: string;
+  readonly bio: string;
+}
