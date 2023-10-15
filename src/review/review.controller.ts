@@ -58,8 +58,13 @@ export class ReviewController {
     );
   }
 
+  @Get("/get-review-by-reviewid/:id")
+  async getReviewsByBlogId(@Param("id") reviewId: string) {
+    return await this.reviewService.findReviewbyReviewId(reviewId);
+  }
+
   @Get("/get-review-by-blog-id/:id")
-  async getReviewsByBlogId(@Param("id") blogId: string) {
+  async getReviewsByReviewId(@Param("id") blogId: string) {
     const reviews = await this.reviewService.findAllbyBlogId(blogId);
 
     return await Promise.all(
