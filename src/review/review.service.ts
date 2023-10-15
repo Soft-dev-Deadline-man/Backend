@@ -95,12 +95,10 @@ export class ReviewService {
     } catch (err) {
       throw new NotAcceptableException("No blog found");
     }
-
-    const imageUrls = [];
+    let imageUrls: string[] = [];
     if (images.length > 0) {
-      await this.uploadMultipleImage(images);
+      imageUrls = await this.uploadMultipleImage(images);
     }
-
     const review: Review = {
       blogId: createReviewDto.blogId,
       authorId: userId,
