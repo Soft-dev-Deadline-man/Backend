@@ -235,18 +235,23 @@ export class UserService {
     }
   }
 
-  async findByIdAndChangePassword(id: string, password: string) {
-    const user = this.userModel.findById(id).exec();
-    if (!user) {
-      throw new NotFoundException("User not found");
-    }
+  async findByIdAndChangePassword(
+    id: string,
+    oldPassword: string,
+    newPassword: string,
+  ) {
+    const user = await this.userModel.findById(id).exec();
+    if (!user) throw new NotFoundException("User not found");
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) throw new BadRequestException("old password is invalid");
 
     let hashedPassword: string;
     try {
       const saltRounds = this.configService.get<number>(
         "credential.bcrypt_salt_round",
       );
-      hashedPassword = bcrypt.hashSync(password, saltRounds as number);
+      hashedPassword = bcrypt.hashSync(newPassword, saltRounds as number);
     } catch (err) {
       return {
         error: err,

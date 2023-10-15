@@ -103,7 +103,8 @@ export class UserController {
   ): Promise<User | unknown> {
     return await this.userService.findByIdAndChangePassword(
       id,
-      changePasswordDto.password,
+      changePasswordDto.oldPassword,
+      changePasswordDto.newPassword,
     );
   }
 
