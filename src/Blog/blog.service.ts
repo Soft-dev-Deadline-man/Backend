@@ -100,6 +100,25 @@ export class BlogService {
     };
   }
 
+  async findTopRatedBlogs(): Promise<BlogSummaryDto[]> {
+    const topBlogs = await this.blogModel
+      .find()
+      .sort({ rating: -1 })
+      .limit(9)
+      .exec();
+
+    return topBlogs.map((blog) => ({
+      _id: blog._id,
+      title: blog.title,
+      category: blog.category,
+      rating: blog.rating,
+      reviewLength: blog.reviews ? blog.reviews.length : 0,
+      address: blog.address,
+      openTime: blog.openTime,
+      firstImage: blog.images.length > 0 ? blog.images[0] : null,
+    }));
+  }
+
   async findAllDataBlogById(id: string): Promise<BlogAllDatadto> {
     const blog = await this.blogModel.findById(id).exec();
     if (!blog) {

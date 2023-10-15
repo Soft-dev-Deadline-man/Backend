@@ -34,6 +34,11 @@ export class BlogController {
     return await this.blogService.findAllwithAllData();
   }
 
+  @Get("/top-location")
+  async getTopLocation() {
+    return await this.blogService.findTopRatedBlogs();
+  }
+
   @Post()
   @ApiBearerAuth()
   @UserRoleGuard(UserRole.ADMIN)
