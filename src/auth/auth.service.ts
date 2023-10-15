@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { OAuth2Client } from "google-auth-library";
+import { LoginTicket, OAuth2Client } from "google-auth-library";
 import { TokenPayload } from "./interface/tokenPayload.interface";
 import { User } from "../User/schemas/user.schema";
 import { Model } from "mongoose";
@@ -99,10 +99,15 @@ export class AuthService {
       this.configService.get<string>("oauth.id"),
       this.configService.get<string>("oauth.secret"),
     );
-    const ticket = await client.verifyIdToken({
-      idToken: credential,
-      audience: this.configService.get("oauth.id"),
-    });
+    let ticket: LoginTicket;
+    try {
+      ticket = await client.verifyIdToken({
+        idToken: credential,
+        audience: this.configService.get("oauth.id"),
+      });
+    } catch (err) {
+      throw new HttpException("Token is invalid.", HttpStatus.BAD_REQUEST);
+    }
 
     const { email = "", name = "", picture = "" } = ticket.getPayload() || {};
     const user = await this.userService.findByEmail(email);
