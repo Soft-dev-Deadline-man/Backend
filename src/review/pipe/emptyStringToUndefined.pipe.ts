@@ -9,11 +9,4 @@ export class EmptyStringToUndefinedPipe implements PipeTransform {
     }
     return value.value;
   }
-
-  static transform(value: TransformFnParams) {
-    if (value.value === "") {
-      return undefined;
-    }
-    return value.value;
-  }
 }

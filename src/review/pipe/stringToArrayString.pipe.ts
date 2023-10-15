@@ -9,11 +9,4 @@ export class StringToArrayStringPipe implements PipeTransform {
     }
     return value.value.split(",");
   }
-
-  static transform(value: TransformFnParams) {
-    if (value.value === "") {
-      return undefined;
-    }
-    return value.value.split(",");
-  }
 }

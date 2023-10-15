@@ -170,6 +170,7 @@ export class ReviewController {
     @Body()
     review: UpdateReviewDto,
   ): Promise<Review> {
+    // console.log(review.oldImages);
     return await this.reviewService.updateById(id, review, images);
   }
 
