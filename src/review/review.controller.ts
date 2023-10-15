@@ -105,7 +105,31 @@ export class ReviewController {
 
   @Get("/get/:userId")
   async getReviewsByUserId(@Param("userId") userId: string) {
-    return await this.reviewService.findAllByUserId(userId);
+    const reviews = await this.reviewService.findAllByUserId(userId);
+
+    return await Promise.all(
+      reviews.map(async (review) => {
+        const returnReviewDto = new ReturnReviewDto();
+        const user: User = await this.userService.findById(review.authorId);
+        const reviewId = await this.reviewService.findIdByRefId(review.refToId);
+
+        returnReviewDto.id = reviewId;
+        returnReviewDto.blogId = review.blogId;
+        returnReviewDto.title = review.title;
+        returnReviewDto.description = review.description;
+        returnReviewDto.recommendActivity = review.recommendActivity;
+        returnReviewDto.spendTime = review.spendTime;
+        returnReviewDto.rating = review.rating;
+        returnReviewDto.author = {
+          _id: review.authorId,
+          name: user.name,
+          profile: user.profile,
+        };
+        returnReviewDto.score = review.score ? review.score : 0;
+        returnReviewDto.images = review.images ? review.images : [];
+        return returnReviewDto;
+      }),
+    );
   }
 
   @ApiBearerAuth()
