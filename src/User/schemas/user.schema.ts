@@ -17,7 +17,7 @@ export class User {
 
   @Prop({
     type: String,
-    default: `hhttps://minio.pickausername.com/picture-bucket/profiles/default.jpg`,
+    default: `https://minio.pickausername.com/picture-bucket/profiles/default.jpg`,
   })
   profile: string;
 

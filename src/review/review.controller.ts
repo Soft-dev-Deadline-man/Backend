@@ -103,8 +103,6 @@ export class ReviewController {
     return await this.reviewService.create(user, createReviewDto, images);
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   @Get("/get/:userId")
   async getReviewsByUserId(@Param("userId") userId: string) {
     return await this.reviewService.findAllByUserId(userId);

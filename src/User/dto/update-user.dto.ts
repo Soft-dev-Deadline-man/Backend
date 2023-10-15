@@ -1,3 +1,4 @@
+import { IsString } from "class-validator";
 import { UserRole } from "../schemas/user.schema";
 
 export class UpdateUserDto {
@@ -12,6 +13,8 @@ export class UpdateUserDto {
 }
 
 export class UpdateNameAndBioDto {
+  @IsString()
   readonly name: string;
+  @IsString()
   readonly bio: string;
 }

@@ -65,11 +65,12 @@ export class UserService {
     if (!user) {
       throw new NotFoundException("User not found");
     }
-    var blogs: BlogSummaryDto[] = [];
-    user.bookmark.forEach(async (bookmarkId) => {
-      const blog = await this.blogService.findBriefBlogById(bookmarkId);
-      blogs.push(blog);
+
+    const bookmarkPromises = user.bookmark.map(async (bookmarkId) => {
+      return this.blogService.findBriefBlogById(bookmarkId);
     });
+
+    const blogs = await Promise.all(bookmarkPromises);
 
     return blogs;
   }
