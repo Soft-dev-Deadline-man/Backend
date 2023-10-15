@@ -106,9 +106,7 @@ export class UserController {
     return await this.userService.findById(id);
   }
 
-  @Post()
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
+  @Post("/change-password/:id")
   async changePassword(
     @Param("id") id: string,
     @Body() changePasswordDto: ChangePasswordDto,
