@@ -39,11 +39,8 @@ export class UserController {
     return await this.userService.findByEmail(user.email);
   }
 
-  @Get("/get/bookmark")
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  async getBookmarksByUserId(@CurrentUser() user: User) {
-    const userId = await this.userService.findByEmailReturnId(user.email);
+  @Get("/get/bookmark/:userId")
+  async getBookmarksByUserId(@Param("userId") userId: string) {
     return await this.userService.getBookmarkByUserId(userId);
   }
 
