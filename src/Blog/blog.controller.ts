@@ -4,15 +4,20 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
+  UseGuards,
 } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { BlogService } from "./blog.service";
 import { Blog } from "./schemas/blog.schema";
 import { CreateBlogDto } from "./dto/create-blog.dto";
 import { UpdateBlogDto } from "./dto/update-blog.dto";
 import { BlogAllDatadto, BlogSummaryDto } from "./dto/get-blog.dto";
+import { UserRole } from "src/User/schemas/user.schema";
+import { UserRoleGuard } from "src/User/common/decorator/role.decorator";
+import { JwtAuthGuard } from "src/auth/guards/jwt-auth.guard";
+import { RolesGuard } from "src/User/guard/roles.guard";
 
 @ApiTags("blogs")
 @Controller("blogs")
@@ -30,6 +35,9 @@ export class BlogController {
   }
 
   @Post()
+  @ApiBearerAuth()
+  @UserRoleGuard(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async createNewBlog(@Body() blog: CreateBlogDto): Promise<Blog> {
     return await this.blogService.create(blog);
   }
@@ -49,7 +57,10 @@ export class BlogController {
     return await this.blogService.findAllDataBlogById(id);
   }
 
-  @Put(":id")
+  @Patch(":id")
+  @ApiBearerAuth()
+  @UserRoleGuard(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async updateBlog(
     @Param("id") id: string,
     @Body() blog: UpdateBlogDto,
@@ -58,6 +69,9 @@ export class BlogController {
   }
 
   @Delete(":id")
+  @ApiBearerAuth()
+  @UserRoleGuard(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async deleteBlog(@Param("id") id: string): Promise<Blog> {
     return await this.blogService.deleteById(id);
   }

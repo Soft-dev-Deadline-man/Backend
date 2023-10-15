@@ -1,3 +1,4 @@
+import { IsNotEmpty } from "class-validator";
 import {
   Category,
   Contact,
@@ -8,18 +9,28 @@ import {
 } from "../schemas/blog.schema";
 
 export class UpdateBlogDto {
+  @IsNotEmpty()
   readonly title: string;
+
+  @IsNotEmpty()
   readonly category: Category;
+
   readonly openTime: OpenTime[];
   readonly entrancePrice: EntrancePrice;
 
+  @IsNotEmpty()
   readonly address: string;
+
   readonly rating: number;
   readonly reviewLength: number;
   readonly separateRating: SeparateRating;
 
   readonly reviews: string[];
+
+  @IsNotEmpty()
   readonly latitude: string;
+
+  @IsNotEmpty()
   readonly longitude: string;
 
   readonly forbidden: Forbidden;

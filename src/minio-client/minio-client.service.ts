@@ -66,6 +66,7 @@ export class MinioClientService {
 
   public async upload(
     file: BufferedFile,
+    folder: string = "",
     bucketName: string = this.bucketName,
   ) {
     // Only allow jpeg and png
@@ -83,11 +84,20 @@ export class MinioClientService {
 
     // Image Width and Height must be more than 400px
     const dimensions = sizeOf(file.buffer as Buffer);
-    if (dimensions.width < 400 || dimensions.height < 400) {
-      throw new HttpException(
-        "Image dimensions too small",
-        HttpStatus.BAD_REQUEST,
-      );
+    if (folder === "profiles/") {
+      if (dimensions.width > 400 || dimensions.height > 400) {
+        throw new HttpException(
+          "Image dimensions too large for profile image.",
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    } else {
+      if (dimensions.width < 400 || dimensions.height < 400) {
+        throw new HttpException(
+          "Image dimensions too small for review or blog image.",
+          HttpStatus.BAD_REQUEST,
+        );
+      }
     }
 
     const timestamp = Date.now().toString();
@@ -101,10 +111,9 @@ export class MinioClientService {
     );
     const metadata = { "Content-type": file.mimetype };
     const fileName = hashedFileName + extension;
-
     this.client.putObject(
       bucketName,
-      fileName,
+      folder + fileName,
       file.buffer,
       metadata,
       (err) => {
@@ -118,30 +127,22 @@ export class MinioClientService {
       },
     );
     return {
-      url:
-        this.configService.get<string>("minio.endpoint") === "minio"
-          ? // Production
-            `https://${this.configService.get<string>(
-              "minio.endpoint",
-            )}.${this.configService.get<string>(
-              "domain",
-            )}/${this.configService.get<string>("minio.bucket")}/${fileName}`
-          : // Development
-            `http://${this.configService.get<string>(
-              "minio.endpoint",
-            )}:${this.configService.get<number>(
-              "minio.port",
-            )}/${this.configService.get<string>("minio.bucket")}/${fileName}`,
+      url: `https://minio.${this.configService.get<string>(
+        "domain",
+      )}/${this.configService.get<string>("minio.bucket")}/${
+        folder + fileName
+      }`,
     };
   }
 
   public async uploadMultiple(
     files: BufferedFile[],
+    folder: string = "",
     bucketName: string = this.bucketName as string,
   ) {
     const urls: { url: string }[] = [];
     for (const file of files) {
-      urls.push(await this.upload(file, bucketName));
+      urls.push(await this.upload(file, folder, bucketName));
     }
 
     return urls;

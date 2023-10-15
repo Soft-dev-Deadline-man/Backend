@@ -8,6 +8,7 @@ import { Blog } from "./schemas/blog.schema";
 import mongoose from "mongoose";
 import { BlogAllDatadto, BlogSummaryDto } from "./dto/get-blog.dto";
 import { CreateBlogDto } from "./dto/create-blog.dto";
+import { UpdateBlogDto } from "./dto/update-blog.dto";
 
 @Injectable()
 export class BlogService {
@@ -269,7 +270,6 @@ export class BlogService {
       throw new NotFoundException("Blog not found");
     }
     images?.forEach((inputImg) => {
-      // console.log(inputImg);
       blog.images.push(inputImg);
     });
 
@@ -285,12 +285,15 @@ export class BlogService {
     );
   }
 
-  async updateById(id: string, blog: Blog): Promise<Blog> {
+  async updateById(id: string, blog: UpdateBlogDto): Promise<Blog> {
     return (await this.blogModel
-      .findByIdAndUpdate(id, blog, {
-        new: true,
-        runValidators: true,
-      })
+      .findByIdAndUpdate(
+        id,
+        { ...blog },
+        {
+          new: true,
+        },
+      )
       .exec()) as Blog;
   }
 
