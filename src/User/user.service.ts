@@ -11,6 +11,8 @@ import * as bcrypt from "bcrypt";
 import { ConfigService } from "@nestjs/config";
 import { BufferedFile } from "src/minio-client/file.model";
 import { MinioClientService } from "src/minio-client/minio-client.service";
+import { BlogService } from "src/Blog/blog.service";
+import { BlogSummaryDto } from "src/Blog/dto/get-blog.dto";
 
 @Injectable()
 export class UserService {
@@ -18,6 +20,7 @@ export class UserService {
     @InjectModel(User.name)
     private readonly userModel: mongoose.Model<User>,
     private readonly configService: ConfigService,
+    private readonly blogService: BlogService,
     private readonly minioClientService: MinioClientService,
   ) {}
 
@@ -62,8 +65,13 @@ export class UserService {
     if (!user) {
       throw new NotFoundException("User not found");
     }
+    var blogs: BlogSummaryDto[] = [];
+    user.bookmark.forEach(async (bookmarkId) => {
+      const blog = await this.blogService.findBriefBlogById(bookmarkId);
+      blogs.push(blog);
+    });
 
-    return user.bookmark;
+    return blogs;
   }
 
   async updateNameAndBioByUserId(userId: string, name: string, bio: string) {

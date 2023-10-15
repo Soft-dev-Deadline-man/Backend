@@ -10,11 +10,13 @@ import { ConfigService } from "@nestjs/config";
 import { PassportModule } from "@nestjs/passport";
 import { UserService } from "src/User/user.service";
 import { MinioClientModule } from "src/minio-client/minio-client.module";
+import { BlogModule } from "src/Blog/blog.module";
 
 @Module({
   imports: [
     MinioClientModule,
     UserModule,
+    BlogModule,
     PassportModule.register({ defaultStrategy: "jwt" }),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
