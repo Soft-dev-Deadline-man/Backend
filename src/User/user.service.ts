@@ -13,6 +13,8 @@ import { ConfigService } from "@nestjs/config";
 import { BufferedFile } from "src/minio-client/file.model";
 import { MinioClientService } from "src/minio-client/minio-client.service";
 import { BlogService } from "src/Blog/blog.service";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
 
 @Injectable()
 export class UserService {
@@ -35,7 +37,7 @@ export class UserService {
     }));
   }
 
-  async create(user: User): Promise<User> {
+  async create(user: CreateUserDto): Promise<User> {
     return await this.userModel.create(user);
   }
 
@@ -279,7 +281,7 @@ export class UserService {
     return "Update password successful";
   }
 
-  async updateById(id: string, user: User): Promise<User> {
+  async updateById(id: string, user: UpdateUserDto): Promise<User> {
     return (await this.userModel
       .findByIdAndUpdate(id, user, {
         new: true,

@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { LoginTicket, OAuth2Client } from "google-auth-library";
 import { TokenPayload } from "./interface/tokenPayload.interface";
-import { User } from "../User/schemas/user.schema";
+import { AccountType, User } from "../User/schemas/user.schema";
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { UserService } from "src/User/user.service";
@@ -115,6 +115,7 @@ export class AuthService {
       const newUser = new this.userModel({
         email: email,
         name: name,
+        accountType: AccountType.OAUTH,
         profile: picture,
       });
       await newUser.save();

@@ -5,6 +5,10 @@ export enum UserRole {
   USER = "user",
 }
 
+export enum AccountType {
+  OAUTH = "OAuth",
+  NORMAL = "normal",
+}
 @Schema({
   timestamps: true,
 })
@@ -29,6 +33,12 @@ export class User {
     default: "user",
   })
   role: UserRole;
+
+  @Prop({
+    enum: AccountType,
+    default: "normal",
+  })
+  accountType: AccountType;
 
   @Prop()
   bio: string;
