@@ -105,6 +105,14 @@ export class ReviewController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @Get("/user-id")
+  async getReviewsByUserId(@CurrentUser() user: User) {
+    const userId = await this.userService.findByEmailReturnId(user.email);
+    return await this.reviewService.findAllByUserId(userId);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post("/like/:id")
   async voteUpReview(@CurrentUser() user: User, @Param("id") reviewId: string) {
     const userId = await this.userService.findByEmailReturnId(user.email);

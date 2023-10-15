@@ -52,6 +52,10 @@ export class ReviewService {
     return await this.reviewModel.find({ blogId: blogId }).exec();
   }
 
+  async findAllByUserId(userId: string): Promise<Review[]> {
+    return await this.reviewModel.find({ authorId: userId }).exec();
+  }
+
   async voteReview(userId: string, reviewId: string, action: string) {
     const review = await this.reviewModel.findById(reviewId);
     if (!review) throw new BadRequestException("not found this review-id");
