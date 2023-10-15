@@ -12,7 +12,6 @@ import { ConfigService } from "@nestjs/config";
 import { BufferedFile } from "src/minio-client/file.model";
 import { MinioClientService } from "src/minio-client/minio-client.service";
 import { BlogService } from "src/Blog/blog.service";
-import { BlogSummaryDto } from "src/Blog/dto/get-blog.dto";
 
 @Injectable()
 export class UserService {
