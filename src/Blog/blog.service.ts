@@ -244,13 +244,6 @@ export class BlogService {
     }
 
     const separateRating = blog.separateRating;
-    const weightedSum =
-      separateRating.rate5 * 5 +
-      separateRating.rate4 * 4 +
-      separateRating.rate3 * 3 +
-      separateRating.rate2 * 2 +
-      separateRating.rate1 * 1;
-
     const totalRatings =
       separateRating.rate5 +
       separateRating.rate4 +
@@ -258,23 +251,24 @@ export class BlogService {
       separateRating.rate2 +
       separateRating.rate1;
 
-    if (totalRatings === 0) {
-      return "0.0";
-    }
-
-    const overallRating = (weightedSum / totalRatings).toFixed(1);
+    const overallRating =
+      totalRatings === 0
+        ? "0"
+        : (
+            (separateRating.rate5 * 5 +
+              separateRating.rate4 * 4 +
+              separateRating.rate3 * 3 +
+              separateRating.rate2 * 2 +
+              separateRating.rate1) /
+            totalRatings
+          ).toFixed(1);
 
     blog.rating = parseFloat(overallRating);
 
     await this.blogModel.findByIdAndUpdate(
       id,
-      {
-        ...blog,
-        rating: parseFloat(overallRating),
-      },
-      {
-        new: true,
-      },
+      { ...blog, rating: parseFloat(overallRating).toString() },
+      { new: true },
     );
 
     return overallRating;
