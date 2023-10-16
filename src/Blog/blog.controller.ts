@@ -41,25 +41,27 @@ export class BlogController {
 
   @Post()
   @ApiBearerAuth()
-  // @UserRoleGuard(UserRole.ADMIN)
-  // @UseGuards(JwtAuthGuard, RolesGuard)
+  @UserRoleGuard(UserRole.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   async createNewBlog(@Body() blog: CreateBlogDto): Promise<Blog> {
-    console.log(blog);
     return await this.blogService.create(blog);
   }
 
   @Get(":id")
   async getBlog(@Param("id") id: string): Promise<Blog> {
+    await this.blogService.calculateOverallRating(id);
     return await this.blogService.findById(id);
   }
 
   @Get("/brief/:id")
   async getBriefBlogById(@Param("id") id: string): Promise<BlogSummaryDto> {
+    await this.blogService.calculateOverallRating(id);
     return await this.blogService.findBriefBlogById(id);
   }
 
   @Get("/all-data/:id")
   async getAllDataBlogById(@Param("id") id: string): Promise<BlogAllDatadto> {
+    await this.blogService.calculateOverallRating(id);
     return await this.blogService.findAllDataBlogById(id);
   }
 
