@@ -16,6 +16,7 @@ import { UserService } from "src/User/user.service";
 import { UpdateReviewDto } from "./dto/update-review.dto";
 import { BufferedFile } from "src/minio-client/file.model";
 import { MinioClientService } from "../minio-client/minio-client.service";
+import { v4 as uuidv4 } from "uuid";
 
 @Injectable()
 export class ReviewService {
@@ -107,9 +108,12 @@ export class ReviewService {
     if (images.length > 0) {
       imageUrls = await this.uploadMultipleImage(images);
     }
+
+    const uuid = uuidv4();
     const review: Review = {
       blogId: createReviewDto.blogId,
       authorId: userId,
+      refToId: uuid,
       title: createReviewDto.title,
       description: createReviewDto.description,
       recommendActivity: createReviewDto.recommendActivity,
