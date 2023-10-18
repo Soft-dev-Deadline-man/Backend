@@ -4,7 +4,9 @@ import { v4 as uuidv4 } from "uuid";
 @Schema({ timestamps: true })
 export class Review {
   @Prop({
-    default: uuidv4(),
+    default: function genUUID() {
+      return uuidv4();
+    },
   })
   refToId?: string;
 
