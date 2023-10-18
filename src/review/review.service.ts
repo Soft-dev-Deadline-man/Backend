@@ -108,6 +108,8 @@ export class ReviewService {
     if (images.length > 0) {
       imageUrls = await this.uploadMultipleImage(images);
     }
+
+    const uuid = uuidv4();
     const review: Review = {
       blogId: createReviewDto.blogId,
       authorId: userId,
